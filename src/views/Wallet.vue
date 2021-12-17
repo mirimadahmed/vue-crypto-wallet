@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="col-md-10 m-auto bg-light">
-      <div class="row font-weight-bold px-2 text-center">
+      <div class="row font-weight-bold px-2 text-center" v-if="!isLoading">
         <div class="col-md-6 my-3 align-self-center">
           <h2>Your wallet</h2>
         </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="col-md-6 my-2">
           <h5>Total Balance</h5>
-          <h2>SRDS {{ user.balance }}</h2>
+          <h2>SRDS {{ userBalance }}</h2>
         </div>
       </div>
     </div>
@@ -56,6 +56,8 @@ export default {
   },
   data() {
     return {
+      isLoading: true,
+      balance: 0,
       user: null,
       assets: [
         { asset: "SRDS", value: 0 },
@@ -63,37 +65,92 @@ export default {
         { asset: "WETH.e", value: 10 },
         { asset: "USDC.e", value: 38 },
       ],
-      transactions: [
-        { type: "Sent", asset: "SRDS", amount: 10 },
-        { type: "Received", asset: "SRDS", amount: 40 },
-        { type: "Sent", asset: "SRDS", amount: 10 },
-        { type: "Received", asset: "SRDS", amount: 30 },
-      ],
+      transactions: [],
     };
   },
   created() {
-    this.user = moralis.User.current();
-    const AvaxTokenBalance = moralis.Object.extend("AvaxTokenBalance");
-    const query = new moralis.Query(AvaxTokenBalance);
-    let address = this.user.get("wallet");
-    address = address.toLowerCase();
-    query.equalTo("address", address);
-    query.find().then((results) => {
-      if (results.length > 0) {
-        console.log(results);
-        this.$nextTick(() => {
-          this.user.balance = results[0].get("balance") / 1000000000000000000;
-        });
-        this.assets[0].asset = "SRDS";
-        this.assets[0].value = this.user.balance;
-      } else {
-        this.user.balance = 0;
-        this.assets[0].asset = "SRDS";
-        this.assets[0].value = 0;
-      }
-    });
+    this.fetch();
+    this.manageTransactions();
+  },
+  computed: {
+    userBalance() {
+      return this.balance;
+    },
   },
   methods: {
+    async fetch() {
+      this.isLoading = true;
+      this.user = moralis.User.current();
+      let address = this.user.get("wallet");
+      address = address.toLowerCase();
+      const query = new moralis.Query("AvaxTokenBalance");
+      query.equalTo("address", address);
+
+      // subscribe for real-time updates
+      const web3 = new moralis.Web3();
+      this.manageUpdates(query, web3);
+      query.find().then((results) => {
+        if (results.length > 0) {
+          this.balance = web3.utils.fromWei(results[0].get("balance"));
+          this.assets[0].value = this.balance;
+          this.isLoading = false;
+        } else {
+          this.balance = 0;
+          this.assets[0].value = 0;
+        }
+        this.isLoading = false;
+      });
+    },
+    async manageUpdates(query, web3) {
+      const subscription = await query.subscribe();
+      subscription.on("create", (data) => {
+        this.balance = web3.utils.fromWei(data.get("balance"));
+        this.assets[0].value = this.balance;
+        console.log("create", data);
+      });
+      subscription.on("update", (data) => {
+        console.log("update", data);
+        this.balance = web3.utils.fromWei(data.get("balance"));
+        this.assets[0].value = this.balance;
+      });
+    },
+    async manageTransactions() {
+      let address = this.user.get("wallet");
+      address = address.toLowerCase();
+      const query = new moralis.Query("AvaxTokenTransfers");
+      query.equalTo("to_address", address);
+      const web3 = new moralis.Web3();
+      // subscribe for real-time updates
+      const subscription = await query.subscribe();
+      subscription.on("create", (data) => {
+        const amountEth = web3.utils.fromWei(data.get("value"));
+        this.transactions.push({
+          confirmed: data.get("confirmed"),
+          type: "Received",
+          asset: "SRDS",
+          amount: amountEth,
+        });
+      });
+      subscription.on("update", (data) => {
+        this.transactions.forEach((transaction) => {
+          if(transaction.id === data.id) {
+            transaction.confirmed = data.get("confirmed");
+          }
+        })
+      });
+      query.find().then((transactions) => {
+        transactions.forEach((transaction) => {
+          const amountEth = web3.utils.fromWei(transaction.get("value"));
+          this.transactions.push({
+            id: transaction.id,
+            confirmed: transaction.get("confirmed"),
+            type: "Received",
+            asset: "SRDS",
+            amount: amountEth,
+          });
+        });
+      });
+    },
     handleCopy() {
       this.$bvToast.toast("Address copied to clipboard", {
         title: "Copy",

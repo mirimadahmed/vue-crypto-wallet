@@ -12,12 +12,13 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
-
+Vue.prototype.$name = "SARDIS"
 
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isLoggedIn) next({ name: 'Auth' })
+    else if (store.getters.isLoggedIn && to.name === 'Auth') next({ name: 'Wallet' })
     else next()
 })
 

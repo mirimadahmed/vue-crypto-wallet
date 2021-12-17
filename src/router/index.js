@@ -39,6 +39,10 @@ const routes = [{
         meta: {
             requiresAuth: true
         }
+    },
+    {
+        path: '*',
+        redirect: '/auth'
     }
 ]
 

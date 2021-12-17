@@ -4,10 +4,10 @@
       <b-navbar-brand href="#">
         <router-link to="/">
           <img
-            alt="Sardis logo"
+            :alt="`${$name} logo`"
             src="../assets/logofull.png"
             class="img-small w-25 px-5"
-          />
+          /> 
         </router-link>
       </b-navbar-brand>
 
@@ -23,18 +23,19 @@
             <router-link to="/refferals">Referrals</router-link>
           </b-nav-item>
           <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
-            <router-link to="/auth">Login/Signup</router-link>
-          </b-nav-item>
-          <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
-            <router-link to="/onboard">Onboard</router-link>
+            <a href="#" @click="logout">Logout</a>
           </b-nav-item>
 
           <b-nav-item-dropdown right>
             <template #button-content>
-              <em>EN</em>
+              English <country-flag country="usa" size="small" />
             </template>
-            <b-dropdown-item href="#">EN</b-dropdown-item>
-            <b-dropdown-item href="#">TR</b-dropdown-item>
+            <b-dropdown-item href="#">
+              <country-flag country="usa" size="small" /> English
+            </b-dropdown-item>
+            <b-dropdown-item href="#">
+              <country-flag country="tr" size="small" /> Turksih
+            </b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -43,7 +44,21 @@
 </template>
 
 <script>
+import CountryFlag from "vue-country-flag";
+import MoralisFactory from "@/moralis";
+const moralis = MoralisFactory();
 export default {
   name: "Navbar",
+  components: {
+    CountryFlag,
+  },
+  methods: {
+    logout() {
+      moralis.User.logOut().then(() => {
+        this.$store.commit("setAuthentication", null);
+        this.$router.replace({ name: "Auth" });
+      });
+    },
+  },
 };
 </script>

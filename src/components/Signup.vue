@@ -2,25 +2,29 @@
   <div>
     <div class="row p-4" v-if="step === 1">
       <div class="col-12">
-        <h2 class="p-2 mt-3 text-center">SETUP NEW SARDIS WALLET</h2>
+        <h2 class="p-2 mt-3 text-center">SETUP NEW {{$name}} WALLET</h2>
       </div>
       <div class="col-12">
-        <a @click.prevent="$emit('login')" href="#" class="text-center font-weight-lighter text-secondary">
-         <p>Already have a wallet?</p>
+        <a
+          @click.prevent="$emit('login')"
+          href="#"
+          class="text-center font-weight-lighter text-secondary"
+        >
+          <p>Already have a wallet?</p>
         </a>
       </div>
       <div class="col-12">
         <b-form-group
           id="input-group-3"
-          label="Email address:"
+          label="Username:"
           label-for="input-1"
-          description="We'll never share your email with anyone else."
+          description="Give yourself a unique username"
         >
           <b-form-input
             id="input-3"
-            v-model="form.email"
-            type="email"
-            placeholder="Enter email"
+            v-model="form.username"
+            type="text"
+            placeholder="Enter username"
             required
           ></b-form-input>
         </b-form-group>
@@ -32,6 +36,7 @@
             v-model="form.password"
             type="password"
             placeholder="Enter password"
+            :state="passwordConfirmationRule"
             required
           ></b-form-input>
           <password
@@ -53,15 +58,30 @@
             v-model="form.confirmpassword"
             type="password"
             placeholder="Confirm password"
-            :state="passwordConfirmationRule"
+            :state="confirmPasswordConfirmationRule"
             required
           ></b-form-input>
         </b-form-group>
       </div>
+      <div class="col-12" v-if="error">
+        <p class="text-center font-weight-lighter text-danger">{{ error }}</p>
+      </div>
       <div class="col-12 text-center">
-        <b-button type="submit" variant="primary" @click="signup()"
-          >CREATE WALLET</b-button
+        <b-button
+          type="submit"
+          variant="primary"
+          @click="signup()"
+          :disabled="!passwordConfirmationRule || !confirmPasswordConfirmationRule || isLoading"
         >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+            v-if="isLoading"
+          ></span>
+          <span class="sr-only" v-if="isLoading">Loading...</span>
+          CREATE WALLET
+        </b-button>
       </div>
       <div class="col-12 pt-5">
         <a @click.prevent="$emit('back')" href="#">
@@ -69,54 +89,80 @@
         </a>
       </div>
     </div>
-    <div class="row" v-if="step === 2">
-      <b-form-group
-        id="input-group-6"
-        label="Name:"
-        label-for="input-1"
-        description="What do they call you?"
-      >
-        <b-form-input
-          id="input-6"
-          v-model="form.name"
-          type="text"
-          placeholder="Enter name"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group
-        id="input-group-7"
-        label="Surname:"
-        label-for="input-1"
-        description="What's your surname?"
-      >
-        <b-form-input
-          id="input-7"
-          v-model="form.surname"
-          type="text"
-          placeholder="Enter surname"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group
-        id="input-group-8"
-        label="Username:"
-        label-for="input-1"
-        description="Let's setup a username?"
-      >
-        <b-form-input
-          id="input-8"
-          v-model="form.username"
-          type="text"
-          placeholder="Enter username"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-button block type="submit" variant="danger" @click="step--"
-        >Back</b-button
-      >
-      <b-button block type="submit" variant="primary">OK</b-button>
-      <p class="text-center" @click="$emit('back')">Cancel</p>
+    <div class="row p-4" v-if="step === 2">
+      <div class="col-12">
+        <h2 class="p-2 mt-3 text-center">
+          Setup your username and other information.
+        </h2>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-8"
+          label="Email:"
+          label-for="input-1"
+          description="Let's setup an email?"
+        >
+          <b-form-input
+            id="input-8"
+            v-model="form.email"
+            type="email"
+            placeholder="Enter email"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-6"
+          label="Name:"
+          label-for="input-1"
+          description="What do they call you?"
+        >
+          <b-form-input
+            id="input-6"
+            v-model="form.name"
+            type="text"
+            placeholder="Enter name"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          label="Surname:"
+          label-for="input-1"
+          description="What's your surname?"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.surname"
+            type="text"
+            placeholder="Enter surname"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12" v-if="error">
+        <p class="text-center font-weight-lighter text-danger">{{ error }}</p>
+      </div>
+      <div class="col-12 text-center">
+        <b-button
+          type="submit"
+          variant="secondary"
+          @click="setEmailAndOthers"
+          :disabled="isLoading"
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+            v-if="isLoading"
+          ></span>
+          <span class="sr-only" v-if="isLoading">Loading...</span>
+          SET DETAILS
+        </b-button>
+      </div>
     </div>
   </div>
 </template>
@@ -131,7 +177,10 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
+      error: null,
       step: 1,
+      user: null,
       form: {
         email: "",
         password: "",
@@ -145,9 +194,12 @@ export default {
   },
   computed: {
     passwordConfirmationRule() {
-      return (
-        this.form.score >= 3 && this.form.password === this.form.confirmpassword
-      );
+      if (this.form.password.length === 0) return null
+      return this.form.score >= 3
+    },
+    confirmPasswordConfirmationRule() {
+      if (this.form.confirmpassword.length === 0) return null
+      return this.form.score >= 3 && this.form.password === this.form.confirmpassword
     },
   },
   methods: {
@@ -155,19 +207,40 @@ export default {
       this.form.score = score;
     },
     signup() {
-      if (this.form.score < 3) {
-        alert("Password is not strong enough");
-        return;
-      }
+      this.error = null
+      this.isLoading = true;
       const user = new moralis.User();
-      user.set("username", this.form.email);
+      user.set("username", this.form.username);
       user.set("password", this.form.password);
-      user.set("email", this.form.email);
-      user.set("phone", "415-392-0202");
       user
         .signUp()
-        .then((user) => console.log(user))
-        .catch((error) => console.log(error));
+        .then((user) => {
+          this.user = user;
+          this.isLoading = false;
+          this.$store.commit("setAuthentication", user);
+          this.step++;
+        })
+        .catch((error) => {
+          this.error = error.message;
+          this.isLoading = false;
+        });
+    },
+    setEmailAndOthers() {
+      this.error = null
+      this.user.set("email", this.form.email);
+      this.user.set("name", this.form.name);
+      this.user.set("surname", this.form.surname);
+      this.user
+        .save()
+        .then((user) => {
+          this.user = user;
+          this.$store.commit("setAuthentication", user);
+          this.$router.replace({ name: "Onboard" });
+        })
+        .catch((error) => {
+          this.error = error.message;
+          this.isLoading = false;
+        });
     },
   },
 };

@@ -14,6 +14,11 @@ const store = new Vuex.Store({
         isLoggedIn(state) {
             return state.user
         }
+    },
+    mutations: {
+        setAuthentication(state, user) {
+            state.user = user;
+        }
     }
 })
 

@@ -1,148 +1,79 @@
 <template>
-  <div class="auth px-5">
-    <div class="px-5 w-50 m-auto">
-      <b-tabs content-class="mt-3" justified>
-        <b-tab title="Login" active>
-          <b-form-group
-            id="input-group-1"
-            label="Email address:"
-            label-for="input-1"
-            description="We'll never share your email with anyone else."
-          >
-            <b-form-input
-              id="input-1"
-              v-model="form.email"
-              type="email"
-              placeholder="Enter email"
-              required
-            ></b-form-input>
-          </b-form-group>
-          <b-form-group
-            id="input-group-1"
-            label="Password:"
-            label-for="input-1"
-            description="We'll never share your password with anyone else."
-          >
-            <b-form-input
-              id="input-1"
-              v-model="form.password"
-              type="password"
-              placeholder="Enter password"
-              required
-            ></b-form-input>
-          </b-form-group>
-          <b-button type="submit" variant="primary">Login</b-button>
-        </b-tab>
-        <b-tab title="Signup">
-          <div v-if="step === 1">
-            <b-form-group
-              id="input-group-1"
-              label="Email address:"
-              label-for="input-1"
-              description="We'll never share your email with anyone else."
-            >
-              <b-form-input
-                id="input-1"
-                v-model="form.email"
-                type="email"
-                placeholder="Enter email"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-form-group
-              id="input-group-1"
-              label="Password:"
-              label-for="input-1"
-              description="Choose a complex password."
-            >
-              <b-form-input
-                id="input-1"
-                v-model="form.password"
-                type="password"
-                placeholder="Enter password"
-                required
-              ></b-form-input>
-            </b-form-group>
-
-            <b-form-group
-              id="input-group-1"
-              label="Confirm Password:"
-              label-for="input-1"
-              description="Enter again."
-            >
-              <b-form-input
-                id="input-1"
-                v-model="form.password"
-                type="password"
-                placeholder="Confirm password"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-button type="submit" variant="primary" @click="step++"
-              >Next</b-button
-            >
+  <div class="holder">
+    <div v-if="step === 0">
+      <div class="auth col-12 pt-5 px-5">
+        <div class="row m-auto px-5 rounded-lg">
+          <div class="col-6 p-5">
+            <div class="row bg-light p-3">
+              <div class="col-12">
+                <img
+                  src="../assets/illustration-robot 3.png"
+                  alt="robo-1"
+                  class="w-25 float-left robo"
+                />
+              </div>
+              <div class="col-8">
+                <p>WELCOME BACK!</p>
+                <h4>Access your existing Sardis wallet here.</h4>
+              </div>
+              <div class="col-12 pt-5">
+                <button class="btn btn-secondary btn-small" @click="step = 1">
+                  ACCESS WALLET
+                </button>
+              </div>
+            </div>
           </div>
-          <div v-if="step === 2">
-            <b-form-group
-              id="input-group-1"
-              label="Name:"
-              label-for="input-1"
-              description="What do they call you?"
-            >
-              <b-form-input
-                id="input-1"
-                v-model="form.email"
-                type="text"
-                placeholder="Enter name"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-form-group
-              id="input-group-1"
-              label="Surname:"
-              label-for="input-1"
-              description="What's your surname?"
-            >
-              <b-form-input
-                id="input-1"
-                v-model="form.email"
-                type="text"
-                placeholder="Enter surname"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-form-group
-              id="input-group-1"
-              label="Username:"
-              label-for="input-1"
-              description="Let's setup a username?"
-            >
-              <b-form-input
-                id="input-1"
-                v-model="form.email"
-                type="text"
-                placeholder="Enter username"
-                required
-              ></b-form-input>
-            </b-form-group>
-            <b-button type="submit" variant="danger" @click="step--"
-              >Back</b-button
-            >
-            <b-button type="submit" variant="primary" 
-              >OK</b-button
-            >
+          <div class="col-6 p-5">
+            <div class="row bg-light p-3">
+              <div class="col-12">
+                <img
+                  src="../assets/illustration-robot 1.png"
+                  alt="robo-1"
+                  class="w-25 float-left robo"
+                />
+              </div>
+              <div class="col-8">
+                <p>NEW TO SARDIS?</p>
+                <h4>Create a new wallet to send and receive Sardis.</h4>
+              </div>
+              <div class="col-12 pt-5">
+                <button class="btn btn-primary btn-small" @click="step = 2">
+                  CREATE NEW WALLET
+                </button>
+              </div>
+            </div>
           </div>
-        </b-tab>
-      </b-tabs>
+        </div>
+      </div>
+    </div>
+    <div v-if="step === 1" class="auth col-12 pt-5 px-5">
+      <div class="row m-auto px-5 rounded-lg">
+        <div class="col-8 bg-light p-3 m-auto">
+          <Login @back="step = 0" @signup="step = 2" />
+        </div>
+      </div>
+    </div>
+    <div v-if="step === 2" class="auth col-12 pt-5 px-5">
+      <div class="row m-auto px-5 rounded-lg">
+        <div class="col-8 bg-light p-3 m-auto">
+          <Signup @back="step = 0" @login="step = 1" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import Login from "@/components/Login.vue";
+import Signup from "@/components/Signup.vue";
 export default {
+  components: {
+    Login,
+    Signup,
+  },
   data() {
     return {
-      step: 1,
+      step: 0,
       form: {
         email: "",
         password: "",
@@ -151,3 +82,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.robo {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+</style>

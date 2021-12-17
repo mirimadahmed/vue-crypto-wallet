@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.11.5",
+        "@walletconnect/web3-provider": "^1.7.0",
         "bootstrap": "^4.5.2",
         "bootstrap-vue": "^2.17.3",
         "core-js": "^3.6.5",
@@ -21,9 +22,12 @@
         "portal-vue": "^2.1.7",
         "serve-static": "^1.14.1",
         "vue": "^2.6.11",
+        "vue-country-flag": "^2.3.2",
+        "vue-password-strength-meter": "^1.7.2",
         "vue-router": "^3.2.0",
         "vuex": "^3.0.1",
-        "vuex-persistedstate": "^2.5.4"
+        "vuex-persistedstate": "^2.5.4",
+        "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
         "@vue/cli-plugin-babel": "~4.5.0",

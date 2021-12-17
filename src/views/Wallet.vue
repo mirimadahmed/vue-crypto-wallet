@@ -28,7 +28,7 @@
         </div>
         <div class="col-md-6 my-2">
           <h5>Total Balance</h5>
-          <h2>${{ user.get("amount") }}</h2>
+          <h2>SRDS {{ user.balance }}</h2>
         </div>
       </div>
     </div>
@@ -58,21 +58,40 @@ export default {
     return {
       user: null,
       assets: [
-        { asset: "SXRDX", value: 40 },
+        { asset: "SRDS", value: 0 },
         { asset: "WBTC.e", value: 2 },
         { asset: "WETH.e", value: 10 },
         { asset: "USDC.e", value: 38 },
       ],
       transactions: [
-        { type: "Sent", asset: "SXRDX", amount: 40 },
-        { type: "Received", asset: "SXRDX", amount: 2 },
-        { type: "Sent", asset: "SXRDX", amount: 10 },
-        { type: "Received", asset: "SXRDX", amount: 38 },
+        { type: "Sent", asset: "SRDS", amount: 10 },
+        { type: "Received", asset: "SRDS", amount: 40 },
+        { type: "Sent", asset: "SRDS", amount: 10 },
+        { type: "Received", asset: "SRDS", amount: 30 },
       ],
     };
   },
   created() {
     this.user = moralis.User.current();
+    const AvaxTokenBalance = moralis.Object.extend("AvaxTokenBalance");
+    const query = new moralis.Query(AvaxTokenBalance);
+    let address = this.user.get("wallet");
+    address = address.toLowerCase();
+    query.equalTo("address", address);
+    query.find().then((results) => {
+      if (results.length > 0) {
+        console.log(results);
+        this.$nextTick(() => {
+          this.user.balance = results[0].get("balance") / 1000000000000000000;
+        });
+        this.assets[0].asset = "SRDS";
+        this.assets[0].value = this.user.balance;
+      } else {
+        this.user.balance = 0;
+        this.assets[0].asset = "SRDS";
+        this.assets[0].value = 0;
+      }
+    });
   },
   methods: {
     handleCopy() {

@@ -6,8 +6,14 @@
           <div class="row">
             <div class="col-12 p-2 bg-light">
               <div class="row px-2">
-                <div class="col-6 col-sm-4 col-md-4 col-lg-3 px-2" v-for="(word, i) in words" :key="word">
-                  <div class="bg-white text-secondary px-2 py-3 my-1 mnemonic-word">
+                <div
+                  class="col-6 col-sm-4 col-md-4 col-lg-3 px-2"
+                  v-for="(word, i) in words"
+                  :key="word"
+                >
+                  <div
+                    class="bg-white text-secondary px-2 py-3 my-1 mnemonic-word"
+                  >
                     <span>{{ i + 1 }}.</span>
                     <span
                       class="
@@ -25,11 +31,6 @@
             <div class="col-12 bg-light my-3 p-3 font-weight-bold">
               {{ mnemonic }}
             </div>
-            <div class="col-12 my-2 pl-0">
-              <button class="btn btn-secondary btn-small" @click="create">
-                REGENERATE
-              </button>
-            </div>
           </div>
         </div>
         <div class="col-md-6 p-5 selection-box">
@@ -44,7 +45,8 @@
             <div class="col-12">
               <h1>This is your key phrase.</h1>
               <p>
-                Use these 24 words in sequential order to recover your {{$name}}
+                Use these 24 words in sequential order to recover your
+                {{ $name }}
                 Wallet
               </p>
             </div>
@@ -109,7 +111,12 @@ export default {
         currentUser.set("wallet", this.caddress);
         currentUser.set("amount", 0);
         currentUser.save().then(() => {
-          this.$router.push("/wallet");
+          moralis.Cloud.run("watchAvaxAddress", {
+            address: this.caddress.toLowerCase(),
+            sync_historical: false,
+          }).then(() => {
+            this.$router.push("/wallet");
+          });
         });
       } else {
         // show the signup or login page
@@ -126,8 +133,7 @@ export default {
 };
 </script>
 <style>
-
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
   .selection-box {
     width: 100% !important;
     margin: 0 !important;
@@ -140,6 +146,5 @@ export default {
   .wrapper-box {
     padding: 30px !important;
   }
- }
-
+}
 </style>

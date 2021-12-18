@@ -34,7 +34,7 @@
               <country-flag country="usa" size="small" /> English
             </b-dropdown-item>
             <b-dropdown-item href="#">
-              <country-flag country="tr" size="small" /> Turksih
+              <country-flag country="tr" size="small" /> Turkish
             </b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>

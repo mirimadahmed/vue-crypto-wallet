@@ -10,7 +10,7 @@
           href="#"
           class="text-center font-weight-lighter text-secondary"
         >
-          <p>Don't have wallet?</p>
+          <p>Don't have a wallet?</p>
         </a>
       </div>
       <div class="col-12">

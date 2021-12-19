@@ -56,7 +56,7 @@ export default {
     logout() {
       moralis.User.logOut().then(() => {
         this.$store.commit("setAuthentication", null);
-        this.$router.replace({ name: "Auth" });
+        this.$router.push('/')
       });
     },
   },

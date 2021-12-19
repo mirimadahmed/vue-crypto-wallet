@@ -2,7 +2,7 @@
   <div>
     <div class="row p-4" v-if="step === 1">
       <div class="col-12">
-        <h2 class="p-2 mt-3 text-center">SETUP NEW {{$name}} WALLET</h2>
+        <h2 class="p-2 mt-3 text-center">SETUP NEW {{ $name }} WALLET</h2>
       </div>
       <div class="col-12">
         <a
@@ -63,6 +63,22 @@
           ></b-form-input>
         </b-form-group>
       </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          label="Referred By:"
+          label-for="input-1"
+          description="Who referred you?"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.referral"
+            type="email"
+            placeholder="Enter email of referral"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
       <div class="col-12" v-if="error">
         <p class="text-center font-weight-lighter text-danger">{{ error }}</p>
       </div>
@@ -71,7 +87,11 @@
           type="submit"
           variant="primary"
           @click="signup()"
-          :disabled="!passwordConfirmationRule || !confirmPasswordConfirmationRule || isLoading"
+          :disabled="
+            !passwordConfirmationRule ||
+            !confirmPasswordConfirmationRule ||
+            isLoading
+          "
         >
           <span
             class="spinner-border spinner-border-sm"
@@ -92,7 +112,7 @@
     <div class="row p-4" v-if="step === 2">
       <div class="col-12">
         <h2 class="p-2 mt-3 text-center">
-          Setup your username and other information.
+          Setup your email and other information.
         </h2>
       </div>
       <div class="col-12">
@@ -189,17 +209,30 @@ export default {
         surname: "",
         username: "",
         score: 0,
+        referral: "",
       },
     };
   },
+  created() {
+    this.form.referral = this.$store.getters.referredBy;
+    const currentUser = moralis.User.current();
+    if (currentUser) {
+      this.user = currentUser;
+      // If we reached here, this means we have a logged in user who needs to set details.
+      this.step = 2;
+    }
+
+  },
   computed: {
     passwordConfirmationRule() {
-      if (this.form.password.length === 0) return null
-      return this.form.score >= 3
+      if (this.form.password.length === 0) return null;
+      return this.form.score >= 3;
     },
     confirmPasswordConfirmationRule() {
-      if (this.form.confirmpassword.length === 0) return null
-      return this.form.score >= 3 && this.form.password === this.form.confirmpassword
+      if (this.form.confirmpassword.length === 0) return null;
+      return (
+        this.form.score >= 3 && this.form.password === this.form.confirmpassword
+      );
     },
   },
   methods: {
@@ -207,7 +240,7 @@ export default {
       this.form.score = score;
     },
     signup() {
-      this.error = null
+      this.error = null;
       this.isLoading = true;
       const user = new moralis.User();
       user.set("username", this.form.username);
@@ -217,7 +250,6 @@ export default {
         .then((user) => {
           this.user = user;
           this.isLoading = false;
-          this.$store.commit("setAuthentication", user);
           this.step++;
         })
         .catch((error) => {
@@ -226,7 +258,7 @@ export default {
         });
     },
     setEmailAndOthers() {
-      this.error = null
+      this.error = null;
       this.user.set("email", this.form.email);
       this.user.set("name", this.form.name);
       this.user.set("surname", this.form.surname);
@@ -235,6 +267,7 @@ export default {
         .then((user) => {
           this.user = user;
           this.$store.commit("setAuthentication", user);
+          this.createReferralRecord(this.form.email, this.form.referral);
           this.$router.replace({ name: "Onboard" });
         })
         .catch((error) => {
@@ -242,6 +275,15 @@ export default {
           this.isLoading = false;
         });
     },
+    createReferralRecord(user, referral) {
+      if (referral && referral.length > 0) {
+        const Referrals = moralis.Object.extend("Referrals");
+        const referrals = new Referrals();
+        referrals.set("userfrom", referral);
+        referrals.set("userto", user);
+        referrals.save()
+      }
+    }
   },
 };
 </script>

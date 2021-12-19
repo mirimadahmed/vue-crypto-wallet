@@ -40,22 +40,36 @@
       <div class="w-100 bg-light my-4">
         <b-tabs content-class="mt-3" justified>
           <b-tab title="Assets" active>
-            <b-table hover :items="assets"></b-table>
+            <div class="col-12 p-2 text-center">
+              <b-table
+                hover
+                :items="assets"
+                :fields="['name', 'value']"
+              ></b-table>
+              <p v-if="assets.length === 0">
+                It's empty here. Send some SRDS to your wallet.
+              </p>
+            </div>
           </b-tab>
           <b-tab title="Transactions">
-            <b-table
-              hover
-              :items="transactions"
-              :fields="['type', 'token', 'amount', 'transaction']"
-            >
-              <template #cell(transaction)="data">
-                <a
-                  target="_blank"
-                  :href="`https://snowtrace.io/tx/${data.item.transaction}`"
-                  >Transaction <b-icon icon="link45deg"
-                /></a>
-              </template>
-            </b-table>
+            <div class="col-12 p-2 text-center">
+              <b-table
+                hover
+                :items="transactions"
+                :fields="['type', 'token', 'amount', 'transaction']"
+              >
+                <template #cell(transaction)="data">
+                  <a
+                    target="_blank"
+                    :href="`https://snowtrace.io/tx/${data.item.transaction}`"
+                    >Transaction <b-icon icon="link45deg"
+                  /></a>
+                </template>
+              </b-table>
+              <p v-if="transactions.length === 0">
+                Send or receive something to see your transactions.
+              </p>
+            </div>
           </b-tab>
         </b-tabs>
       </div>
@@ -82,7 +96,7 @@ export default {
       address: null,
       tokenAddressSymbolMap: {
         "0x71d78d01cf3e8cf1945e93abc9fd6017ec562999": "SRDS",
-      }
+      },
     };
   },
   created() {
@@ -223,10 +237,13 @@ export default {
       query.find().then((results) => {
         if (results.length > 0) {
           results.forEach((result) => {
-            this.assets.push({
-              value: web3.utils.fromWei(result.get("balance")),
-              name: "AVAX",
-            });
+            if (result.get("balance") && result.get("balance") !== "0") {
+              this.assets.push({
+                value: web3.utils.fromWei(result.get("balance")),
+                name: "AVAX",
+                id: result.id,
+              });
+            }
           });
         }
         this.isLoading = false;
@@ -281,7 +298,7 @@ export default {
     },
     getTokenSymbol(tokenAddress) {
       return this.tokenAddressSymbolMap[tokenAddress] || "";
-    }
+    },
   },
 };
 </script>

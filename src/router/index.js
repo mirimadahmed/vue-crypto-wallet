@@ -8,6 +8,12 @@ const routes = [{
         redirect: '/auth'
     },
     {
+        path: '/refer/:ref',
+        name: 'AuthWithRef',
+        component: () =>
+            import ( /* webpackChunkName: "about" */ '../views/Auth.vue'),
+    },
+    {
         path: '/auth',
         name: 'Auth',
         component: () =>
@@ -42,7 +48,7 @@ const routes = [{
     },
     {
         path: '*',
-        redirect: '/auth'
+        redirect: '/'
     }
 ]
 

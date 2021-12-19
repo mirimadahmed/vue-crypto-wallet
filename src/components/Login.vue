@@ -80,7 +80,17 @@ export default {
         .then((user) => {
           this.isLoading = false
           this.$store.commit("setAuthentication", user);
-          this.$router.replace({ name: "Wallet" });
+          if (user.get("wallet") && user.get("wallet").length > 0) {
+            // If the user don't have email already setup, send him to email onboarding
+            if (user.get("email") && user.get("email").length > 0) {
+              this.$router.replace({ name: "Wallet" });
+            } else {
+              this.$emit('email-not-set')
+            }
+          } else {
+          // If the user don't have a wallet already setup, send him to wallet onboarding
+            this.$router.replace({ name: "Onboard" });
+          }
         })
         .catch((error) => {
           this.isLoading = false

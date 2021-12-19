@@ -1,5 +1,6 @@
 <template>
   <div class="holder">
+    {{ $route.params.id }}
     <div v-if="step === 0">
       <div class="auth col-12 pt-5 px-5">
         <div class="row m-auto px-5 rounded-lg auth-wrapper">
@@ -49,7 +50,7 @@
     <div v-if="step === 1" class="auth col-12 pt-5 px-5 auth-child">
       <div class="row m-auto px-5 rounded-lg auth-boxes">
         <div class="bg-light p-3 m-auto auth-child-wrapper">
-          <Login @back="step = 0" @signup="step = 2" />
+          <Login @email-not-set="step = 2" @back="step = 0" @signup="step = 2" />
         </div>
       </div>
     </div>
@@ -80,6 +81,12 @@ export default {
       },
     };
   },
+  created() {
+    if (this.$route.params.ref) {
+      this.$store.commit("setReferral", this.$route.params.ref);
+      this.$router.push('/auth')
+    }
+  }
 };
 </script>
 

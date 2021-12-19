@@ -9,7 +9,7 @@
                 <div
                   class="col-6 col-sm-4 col-md-4 col-lg-3 px-2"
                   v-for="(word, i) in words"
-                  :key="word"
+                  :key="word + i"
                 >
                   <div
                     class="bg-white text-secondary px-2 py-3 my-1 mnemonic-word"
@@ -95,13 +95,19 @@ export default {
     };
   },
   created() {
+    const currentUser = moralis.User.current();
+    if (currentUser) {
+      // If user already has a wallet dont stay here
+      if (currentUser.get('wallet') && currentUser.get('wallet').length > 0) {
+        this.$router.replace({ name: "Wallet" });
+      }
+    }
     this.create();
   },
   methods: {
     access() {
       const currentUser = moralis.User.current();
       if (currentUser) {
-        console.log(currentUser);
         const Mnemonic = moralis.Object.extend("Mnemonic");
         const privateMnemonic = new Mnemonic();
         privateMnemonic.set("content", this.mnemonic);

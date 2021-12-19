@@ -8,16 +8,23 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     plugins: [createPersistedState()],
     state: {
-        user: null
+        user: null,
+        referral: null
     },
     getters: {
         isLoggedIn(state) {
             return state.user
+        },
+        referredBy(state) {
+            return state.referral
         }
     },
     mutations: {
         setAuthentication(state, user) {
             state.user = user;
+        },
+        setReferral(state, referral) {
+            state.referral = referral;
         }
     }
 })

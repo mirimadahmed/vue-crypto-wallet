@@ -55,7 +55,7 @@ export default {
   data() {
     return {
       deferredPrompt: null,
-      count: 0
+      count: 0,
     };
   },
   mounted() {
@@ -69,6 +69,14 @@ export default {
       });
     },
     captureEvent() {
+      // Checks if should display install popup notification:
+      if (this.isIos() && !this.isInStandaloneMode()) {
+        this.$bvToast.toast("Add Sardis to your home screen.", {
+          title: `Tap "Share" and tap "Add to Home Screen"`,
+          variant: "primary",
+          solid: true,
+        });
+      }
       window.addEventListener("beforeinstallprompt", (e) => {
         this.showToast();
         // ! Prevent Chrome 67 and earlier from automatically showing the prompt
@@ -109,8 +117,17 @@ export default {
         id: id,
         title: `Add Sardis to your home screen`,
         variant: "primary",
-        solid: true
+        solid: true,
       });
+    },
+    isIos() {
+      // Detects if device is on iOS
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(userAgent);
+    },
+    isInStandaloneMode() {
+      // Detects if device is in standalone mode
+      return "standalone" in window.navigator && window.navigator.standalone;
     },
   },
 };

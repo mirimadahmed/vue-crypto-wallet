@@ -10,4 +10,10 @@ module.exports = {
             }
         }
     },
+    // ...other vue-cli plugin options...
+    pwa: {
+        name: 'Sardis Wallet',
+        appleMobileWebAppCapable: 'yes',
+        appleMobileWebAppStatusBarStyle: 'black',
+    }
 }

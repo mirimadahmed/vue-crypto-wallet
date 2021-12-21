@@ -7,7 +7,7 @@
             :alt="`${$name} logo`"
             src="../assets/logofull.png"
             class="img-small w-25 px-5"
-          /> 
+          />
         </router-link>
       </b-navbar-brand>
 
@@ -52,11 +52,64 @@ export default {
   components: {
     CountryFlag,
   },
+  data() {
+    return {
+      deferredPrompt: null,
+      count: 0
+    };
+  },
+  mounted() {
+    this.captureEvent();
+  },
   methods: {
     logout() {
       moralis.User.logOut().then(() => {
         this.$store.commit("setAuthentication", null);
-        this.$router.push('/')
+        this.$router.push("/");
+      });
+    },
+    captureEvent() {
+      window.addEventListener("beforeinstallprompt", (e) => {
+        this.showToast();
+        // ! Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        this.deferredPrompt = e;
+      });
+    },
+    clickCallback(id) {
+      // Show the prompt
+      this.$bvToast.hide(id);
+      this.deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      this.deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          // Call another function?
+        }
+        this.deferredPrompt = null;
+      });
+    },
+    showToast() {
+      // Use a shorter name for `this.$createElement`
+      const h = this.$createElement;
+      // Create a ID with a incremented count
+      const id = `my-toast-${this.count++}`;
+
+      // Create the custom close button
+      const $closeButton = h(
+        "b-button",
+        {
+          on: { click: () => this.clickCallback(id) },
+        },
+        "Add to home screen"
+      );
+
+      // Create the toast
+      this.$bvToast.toast([$closeButton], {
+        id: id,
+        title: `Add Sardis to your home screen`,
+        variant: "primary",
+        solid: true
       });
     },
   },

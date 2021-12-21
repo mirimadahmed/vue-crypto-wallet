@@ -71,8 +71,8 @@ export default {
     captureEvent() {
       // Checks if should display install popup notification:
       if (this.isIos() && !this.isInStandaloneMode()) {
-        this.$bvToast.toast("Add Sardis to your home screen.", {
-          title: `Tap "Share" and tap "Add to Home Screen"`,
+        this.$bvToast.toast(`Tap "Share" and tap "Add to Home Screen"`, {
+          title: "Add Sardis to your home screen.",
           variant: "primary",
           solid: true,
         });

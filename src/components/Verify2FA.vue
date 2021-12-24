@@ -66,10 +66,12 @@ export default {
     },
     generate2FA() {
       this.secret = this.user.get("twoFactorSecret");
-      console.log(this.secret);
+      if (!this.secret) {
+        this.$router.push("/enable-2fa");
+      }
     },
     verify() {
-      this.error = null
+      this.error = null;
       this.verified = speakeasy.totp.verify({
         secret: this.secret,
         encoding: "ascii",

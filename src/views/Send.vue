@@ -146,10 +146,7 @@ export default {
         return asset.token === this.token;
       });
       if (assets && assets[0]) {
-        return (
-          assets[0].value >
-          web3.utils.fromWei(this.form.amount)
-        );
+        return assets[0].value > web3.utils.fromWei(this.form.amount);
       }
       return false;
     },
@@ -247,9 +244,6 @@ export default {
         this.form.toAddress,
         this.form.amount.toString()
       );
-      console.log(tx);
-      console.log(this.contract);
-      console.log(this.wallet);
       estimateTxGas(this.wallet, tx)
         .then((gasLimit) => {
           console.log(gasLimit);
@@ -262,8 +256,7 @@ export default {
     send() {
       if (!this.wallet) return;
       if (!this.validate()) return;
-      console.log(web3.utils.toWei(this.form.amount, "ether"));
-
+      this.isLoading = true;
       sendErc20(
         this.webWallet,
         this.form.toAddress,

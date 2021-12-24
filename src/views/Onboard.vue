@@ -98,8 +98,12 @@ export default {
     const currentUser = moralis.User.current();
     if (currentUser) {
       // If user already has a wallet dont stay here
-      if (currentUser.get('wallet') && currentUser.get('wallet').length > 0) {
-        this.$router.replace({ name: "Wallet" });
+      if (currentUser.get("wallet") && currentUser.get("wallet").length > 0) {
+        if (currentUser.get("twoFactorEnabled")) {
+          this.$router.replace({ name: "Wallet" });
+        } else {
+          this.$router.replace({ name: "2FA" });
+        }
       }
     }
     this.create();
@@ -114,18 +118,25 @@ export default {
         privateMnemonic.setACL(new moralis.ACL(currentUser));
         privateMnemonic.save();
 
-        currentUser.set("wallet", this.caddress);
+        const Wallet = moralis.Object.extend("Wallet");
+        const publicWallet = new Wallet();
+        publicWallet.set("wallet", this.caddress.toLowerCase());
+        publicWallet.set("email", currentUser.get("email"));
+        publicWallet.save();
+
+        currentUser.set("wallet", this.caddress.toLowerCase());
         currentUser.set("amount", 0);
         currentUser.save().then(() => {
           moralis.Cloud.run("watchAvaxAddress", {
             address: this.caddress.toLowerCase(),
             sync_historical: false,
           }).then(() => {
-            this.$router.push("/wallet");
+            this.$router.replace({ name: "2FA" });
           });
         });
       } else {
         // show the signup or login page
+        this.$router.replace({ name: "Auth" });
       }
     },
     create() {

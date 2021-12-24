@@ -47,6 +47,24 @@ const routes = [{
         }
     },
     {
+        path: '/enable-2fa',
+        name: '2FA',
+        component: () =>
+            import ( /* webpackChunkName: "about" */ '../views/2FA.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/send/:token',
+        name: 'Send',
+        component: () =>
+            import ( /* webpackChunkName: "about" */ '../views/Send.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
         path: '*',
         redirect: '/'
     }

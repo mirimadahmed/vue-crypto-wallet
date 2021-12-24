@@ -17,7 +17,10 @@
             class="w-25"
           />
           <div class="row">
-            <h6 class="text-secondary col pt-2" style="overflow-wrap: anywhere">
+            <h6
+              class="text-secondary col pt-2"
+              style="overflow-wrap: break-word"
+            >
               {{ user.get("wallet") }}
               <copy-to-clipboard :text="user.get('wallet')" @copy="handleCopy">
                 <a href="#"><b-icon icon="clipboard-check"></b-icon></a>
@@ -25,8 +28,8 @@
             </h6>
           </div>
         </div>
-        <div class="col-md-6 my-3 align-self-center">
-          <h2>Total Balance</h2>
+        <div class="col-md-6 my-3">
+          <h2>Total SRDS Balance</h2>
           <img
             src="../assets/illustration-graph 3.png"
             alt="graph-4"
@@ -42,10 +45,23 @@
           <b-tab title="Assets" active>
             <div class="col-12 p-2 text-center">
               <b-table
+                class="m-0"
                 hover
                 :items="assets"
-                :fields="['name', 'value']"
-              ></b-table>
+                :fields="['name', 'value', 'action']"
+              >
+                <template #cell(action)="data">
+                  <div class="h5">
+                    <a :href="`/send/${data.item.token}`"
+                      ><b-icon
+                        icon="arrow-up-right-square"
+                        class="text-success"
+                        size="large"
+                      ></b-icon
+                    ></a>
+                  </div>
+                </template>
+              </b-table>
               <p v-if="assets.length === 0">
                 It's empty here. Send some SRDS to your wallet.
               </p>
@@ -54,15 +70,32 @@
           <b-tab title="Transactions">
             <div class="col-12 p-2 text-center">
               <b-table
+                class="m-0"
                 hover
                 :items="transactions"
-                :fields="['type', 'token', 'amount', 'transaction']"
+                :fields="['status', 'token', 'amount', 'transaction']"
               >
+                <template #cell(status)="data" class="align-self-start">
+                  <div class="h5">
+                    <b-icon
+                      v-if="data.item.status"
+                      icon="check"
+                      class="text-success"
+                      size="large"
+                    ></b-icon>
+                    <b-icon
+                      v-else
+                      icon="clock"
+                      class="text-info"
+                      size="large"
+                    ></b-icon>
+                  </div>
+                </template>
                 <template #cell(transaction)="data">
                   <a
                     target="_blank"
-                    :href="`https://snowtrace.io/tx/${data.item.transaction}`"
-                    >Transaction <b-icon icon="link45deg"
+                    :href="`https://testnet.snowtrace.io/tx/${data.item.transaction}`"
+                    >View on explorer <b-icon icon="link45deg"
                   /></a>
                 </template>
               </b-table>
@@ -95,7 +128,7 @@ export default {
       transactions: [],
       address: null,
       tokenAddressSymbolMap: {
-        "0x71d78d01cf3e8cf1945e93abc9fd6017ec562999": "SRDS",
+        "0x86523d83624b04cf4e62cbeb00c213bbc4486f34": "SRDS",
       },
     };
   },
@@ -139,6 +172,7 @@ export default {
         this.assets.push({
           value: web3.utils.fromWei(result.get("balance")),
           name: result.get("symbol"),
+          token: result.get("token_address"),
           id: result.id,
         });
       });
@@ -157,7 +191,9 @@ export default {
           results.forEach((result) => {
             this.assets.push({
               value: web3.utils.fromWei(result.get("balance")),
+              token: result.get("token_address"),
               name: result.get("symbol"),
+              id: result.id,
             });
             if (result.get("symbol") === "SRDS") {
               this.balance = web3.utils.fromWei(result.get("balance"));
@@ -180,14 +216,13 @@ export default {
       const subscription = await query.subscribe();
       subscription.on("create", (transaction) => {
         this.transactions.push({
-          confirmed: transaction.get("confirmed"),
+          status: transaction.get("confirmed"),
           id: transaction.id,
-          type:
-            transaction.get("to_address") === this.address
-              ? "Received"
-              : "Sent",
           token: this.getTokenSymbol(transaction.get("token_address")),
-          amount: web3.utils.fromWei(transaction.get("value")),
+          amount:
+            transaction.get("to_address") === this.address
+              ? "+" + web3.utils.fromWei(transaction.get("value")).toString()
+              : "-" + web3.utils.fromWei(transaction.get("value")).toString(),
           transaction: transaction.get("transaction_hash"),
         });
       });
@@ -201,14 +236,17 @@ export default {
       query.find().then((transactions) => {
         transactions.forEach((transaction) => {
           this.transactions.push({
-            confirmed: transaction.get("confirmed"),
+            status: transaction.get("confirmed"),
             id: transaction.id,
             type:
               transaction.get("to_address") === this.address
                 ? "Received"
                 : "Sent",
             token: this.getTokenSymbol(transaction.get("token_address")),
-            amount: web3.utils.fromWei(transaction.get("value")),
+            amount:
+              transaction.get("to_address") === this.address
+                ? "+" + web3.utils.fromWei(transaction.get("value")).toString()
+                : "-" + web3.utils.fromWei(transaction.get("value")).toString(),
             transaction: transaction.get("transaction_hash"),
           });
         });
@@ -240,6 +278,7 @@ export default {
             if (result.get("balance") && result.get("balance") !== "0") {
               this.assets.push({
                 value: web3.utils.fromWei(result.get("balance")),
+                token: "AVAX",
                 name: "AVAX",
                 id: result.id,
               });
@@ -262,15 +301,14 @@ export default {
       const subscription = await query.subscribe();
       subscription.on("create", (transaction) => {
         this.transactions.push({
-          confirmed: transaction.get("confirmed"),
+          status: transaction.get("confirmed"),
           id: transaction.id,
-          type:
-            transaction.get("to_address") === this.address
-              ? "Received"
-              : "Sent",
           token: "AVAX",
-          amount: web3.utils.fromWei(transaction.get("value")),
-          transaction: transaction.get("transaction_hash"),
+          amount:
+            transaction.get("to_address") === this.address
+              ? "+" + web3.utils.fromWei(transaction.get("value")).toString()
+              : "-" + web3.utils.fromWei(transaction.get("value")).toString(),
+          transaction: transaction.get("hash"),
         });
       });
       subscription.on("update", (data) => {
@@ -283,15 +321,14 @@ export default {
       query.find().then((transactions) => {
         transactions.forEach((transaction) => {
           this.transactions.push({
-            confirmed: transaction.get("confirmed"),
+            status: transaction.get("confirmed"),
             id: transaction.id,
-            type:
-              transaction.get("to_address") === this.address
-                ? "Received"
-                : "Sent",
             token: "AVAX",
-            amount: web3.utils.fromWei(transaction.get("value")),
-            transaction: transaction.get("transaction_hash"),
+            amount:
+              transaction.get("to_address") === this.address
+                ? "+" + web3.utils.fromWei(transaction.get("value")).toString()
+                : "-" + web3.utils.fromWei(transaction.get("value")).toString(),
+            transaction: transaction.get("hash"),
           });
         });
       });

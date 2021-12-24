@@ -20,25 +20,29 @@
             <router-link to="/wallet">Wallet</router-link>
           </b-nav-item>
           <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
+            <router-link to="/send">Send</router-link>
+          </b-nav-item>
+          <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
             <router-link to="/refferals">Referrals</router-link>
           </b-nav-item>
           <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
             <a href="#" @click="logout">Logout</a>
           </b-nav-item>
-
-          <b-nav-item-dropdown right>
-            <template #button-content>
-              English <country-flag country="usa" size="small" />
-            </template>
-            <b-dropdown-item href="#">
-              <country-flag country="usa" size="small" /> English
-            </b-dropdown-item>
-            <b-dropdown-item href="#">
-              <country-flag country="tr" size="small" /> Turkish
-            </b-dropdown-item>
-          </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item-dropdown right>
+          <template #button-content>
+            English <country-flag country="usa" size="small" />
+          </template>
+          <b-dropdown-item href="#">
+            <country-flag country="usa" size="small" /> English
+          </b-dropdown-item>
+          <b-dropdown-item href="#">
+            <country-flag country="tr" size="small" /> Turkish
+          </b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
     </b-navbar>
   </div>
 </template>

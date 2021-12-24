@@ -1,6 +1,5 @@
 <template>
   <div class="holder">
-    {{ $route.params.id }}
     <div v-if="step === 0">
       <div class="auth col-12 pt-5 px-5">
         <div class="row m-auto px-5 rounded-lg auth-wrapper">

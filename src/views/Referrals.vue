@@ -9,7 +9,7 @@
               purchase.
             </h4>
             <div class="col-md-12 my-3">
-              <p style="overflow-wrap: anywhere">
+              <p style="overflow-wrap: break-word;">
                 <copy-to-clipboard
                   :text="`https://wallet-app-sardis.herokuapp.com/refer/${user.get('email')}`"
                   @copy="handleCopy"
@@ -50,7 +50,7 @@
             <b-table
               hover
               :items="referrals"
-              :fields="['user', 'dated']"
+              :fields="['user', 'date']"
             ></b-table>
             <p v-if="referrals.length === 0">
               Feeling lonely here? You can invite your friends to join Sardis
@@ -68,7 +68,7 @@
             <b-table
               hover
               :items="rewards"
-              :fields="['amount', 'paid', 'dated']"
+              :fields="['amount', 'status', 'date']"
             ></b-table>
             <p v-if="rewards.length === 0">
               You haven't earned any rewards yet.
@@ -84,6 +84,7 @@
 import CopyToClipboard from "vue-copy-to-clipboard";
 import MoralisFactory from "@/moralis";
 const moralis = MoralisFactory();
+const web3 = new moralis.Web3();
 export default {
   components: {
     CopyToClipboard,
@@ -115,15 +116,15 @@ export default {
     },
     getRewards() {
       this.isLoadingRewards = true;
-      const query = new moralis.Query("ReferralRewards");
-      query.equalTo("user", this.user);
+      const query = new moralis.Query("ReferralReward");
+      query.equalTo("user", this.user.get("email"));
       query.find().then((results) => {
         if (results.length > 0) {
           results.forEach((result) => {
             this.rewards.push({
-              amount: result.get("amount"),
-              paid: result.get("paid"),
-              dated: new Date(result.get("createdAt")).toLocaleDateString("en-US"),
+              amount: web3.utils.fromWei(result.get("amount").toString()),
+              status: result.get("paid") ? "Paid" : "Pending",
+              date: new Date(result.get("createdAt")).toLocaleDateString("en-US"),
             });
           });
         }
@@ -139,7 +140,7 @@ export default {
           results.forEach((result) => {
             this.referrals.push({
               user: result.get("userto"),
-              dated: new Date(result.get("createdAt")).toLocaleDateString("en-US"),
+              date: new Date(result.get("createdAt")).toLocaleDateString("en-US"),
             });
           });
         }

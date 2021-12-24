@@ -20,9 +20,6 @@
             <router-link to="/wallet">Wallet</router-link>
           </b-nav-item>
           <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
-            <router-link to="/send">Send</router-link>
-          </b-nav-item>
-          <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
             <router-link to="/refferals">Referrals</router-link>
           </b-nav-item>
           <b-nav-item href="#" v-if="$store.getters.isLoggedIn">

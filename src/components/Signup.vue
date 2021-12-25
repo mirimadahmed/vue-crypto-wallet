@@ -173,6 +173,134 @@
           ></b-form-input>
         </b-form-group>
       </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.setup.dob_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.dob_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.dob"
+            type="date"
+            :placeholder="`${$t('auth.setup.dob_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.setup.address1_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.address1_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.address1"
+            type="text"
+            :placeholder="`${$t('auth.setup.address1_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.setup.address2_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.address2_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.address2"
+            type="text"
+            :placeholder="`${$t('auth.setup.address2_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.setup.city_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.city_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.city"
+            type="text"
+            :placeholder="`${$t('auth.setup.city_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.setup.state_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.state_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.state"
+            type="text"
+            :placeholder="`${$t('auth.setup.state_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.setup.country_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.country_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.country"
+            type="text"
+            :placeholder="`${$t('auth.setup.country_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.setup.country_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.country_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.country"
+            type="text"
+            :placeholder="`${$t('auth.setup.country_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.setup.zip_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.zip_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.zip"
+            type="text"
+            :placeholder="`${$t('auth.setup.zip_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
       <div class="col-12" v-if="error">
         <p class="text-center font-weight-lighter text-danger">{{ error }}</p>
       </div>
@@ -181,6 +309,65 @@
           type="submit"
           variant="secondary"
           @click="setEmailAndOthers"
+          :disabled="isLoading"
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+            v-if="isLoading"
+          ></span>
+          <span class="sr-only" v-if="isLoading">Loading...</span>
+          {{ $t("auth.setup.button") }}
+        </b-button>
+      </div>
+    </div>
+    <div class="row p-4" v-if="step === 3">
+      <div class="col-12">
+        <h2 class="p-2 mt-3 text-center">
+          {{ $t("auth.kyc.heading") }}
+        </h2>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-8"
+          :label="`${$t('auth.kyc.id_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.kyc.id_description')}`"
+        >
+          <b-form-input
+            id="input-8"
+            v-model="form.nid"
+            type="text"
+            :placeholder="`${$t('auth.kyc.id_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
+          :label="`${$t('auth.kyc.file_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.kyc.file_description')}`"
+        >
+         <b-form-file
+            v-model="form.id_file"
+            required
+            :placeholder="`${$t('auth.kyc.file_description')}`"
+            :drop-placeholder="`${$t('auth.kyc.file_description')}`"
+        ></b-form-file>
+
+        </b-form-group>
+      </div>
+      <div class="col-12" v-if="error">
+        <p class="text-center font-weight-lighter text-danger">{{ error }}</p>
+      </div>
+      <div class="col-12 text-center">
+        <b-button
+          type="submit"
+          variant="secondary"
+          @click="setKyc"
           :disabled="isLoading"
         >
           <span
@@ -220,6 +407,16 @@ export default {
         username: "",
         score: 0,
         referral: "",
+        dob:"",
+        address1:"",
+        address2:"",
+        city:"",
+        state:"",
+        country:"",
+        zip:"",
+        nid:"",
+        id_file:"",
+        kyc:-1
       },
     };
   },
@@ -228,8 +425,15 @@ export default {
     const currentUser = moralis.User.current();
     if (currentUser) {
       this.user = currentUser;
+      console.log(this.user.get('email'));
+      if (this.user.get('email')) {
+         this.step = 3;
+      }else{
+         this.step = 2;
+      }
+
       // If we reached here, this means we have a logged in user who needs to set details.
-      this.step = 2;
+
     }
   },
   computed: {
@@ -271,7 +475,38 @@ export default {
       this.user.set("email", this.form.email);
       this.user.set("name", this.form.name);
       this.user.set("surname", this.form.surname);
+      this.user.set("dob", this.form.dob);
+      this.user.set("address1", this.form.address1);
+      this.user.set("address2", this.form.address2);
+      this.user.set("city", this.form.city);
+      this.user.set("state", this.form.state);
+      this.user.set("country", this.form.country);
+      this.user.set("zip", this.form.zip);
       this.user
+        .save()
+        .then((user) => {
+          this.user = user;
+          this.step++;
+        })
+        .catch((error) => {
+          this.error = error.message;
+          this.isLoading = false;
+        });
+    },
+    setKyc() {
+      this.error = null;
+      this.user.set("nid", this.form.nid);
+
+      const moralisFile = new moralis.File(this.form.nid+Date.now().toString(), this.form.id_file)
+
+      moralisFile
+      .save()
+      .then((retFile) =>{
+        console.log(retFile);
+         this.user.set("id_file", retFile);
+         this.user.set("kyc", 0);
+
+          this.user
         .save()
         .then((user) => {
           this.user = user;
@@ -283,6 +518,10 @@ export default {
           this.error = error.message;
           this.isLoading = false;
         });
+
+      })
+
+
     },
     createReferralRecord(user, referral) {
       if (referral && referral.length > 0) {

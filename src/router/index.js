@@ -47,6 +47,15 @@ const routes = [{
         }
     },
     {
+        path: '/buy',
+        name: 'Buy',
+        component: () =>
+            import ( /* webpackChunkName: "about" */ '../views/Buy.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
         path: '/enable-2fa',
         name: '2FA',
         component: () =>

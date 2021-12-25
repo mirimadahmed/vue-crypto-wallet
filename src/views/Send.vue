@@ -162,7 +162,7 @@ export default {
   },
   data() {
     return {
-      otpVerification: false,
+      otpVerification: true,
       form: {
         toAddress: "0x49b11a8b0fde61b643ebad2150f50397636903a2",
         amount: "0",

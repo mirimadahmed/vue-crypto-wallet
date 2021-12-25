@@ -87,6 +87,7 @@
     "nav": {
         "wallet": "Wallet",
         "referrals": "Referrals",
+        "buy": "Buy",
         "logout": "Logout",
         "turkish": "Turkish",
         "english": "English"
@@ -98,5 +99,11 @@
         "amount": "Amount:",
         "gas_fee": "Gas Fee:",
         "button": "Send"
+    },
+    "buy": {
+        "heading": "Buy SRDS token using different options.",
+        "transactions_heading": "Your buy orders history",
+        "new_order_heading": "Buy now",
+        "transactions_empty_message": "It's lonely here, put up a buy order on the right."
     }
 }

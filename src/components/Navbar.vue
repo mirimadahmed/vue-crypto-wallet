@@ -17,26 +17,31 @@
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
-            <router-link to="/wallet">Wallet</router-link>
+            <router-link to="/wallet">{{ $t('nav.wallet') }}</router-link>
           </b-nav-item>
           <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
-            <router-link to="/refferals">Referrals</router-link>
+            <router-link to="/refferals">{{ $t('nav.referrals') }}</router-link>
           </b-nav-item>
           <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
-            <a href="#" @click="logout">Logout</a>
+            <a href="#" @click="logout">{{ $t('nav.logout') }}</a>
           </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right>
           <template #button-content>
-            English <country-flag country="usa" size="small" />
+            <template v-if="$i18n.locale === 'en'">
+            {{ $t('nav.english') }} <country-flag country="usa" size="small" />
+            </template>
+            <template v-if="$i18n.locale === 'tr'">
+            {{ $t('nav.turkish') }} <country-flag country="tr" size="small" />
+            </template>
           </template>
-          <b-dropdown-item href="#">
-            <country-flag country="usa" size="small" /> English
+          <b-dropdown-item href="#" @click="switchLocale('en')">
+            <country-flag country="usa" size="small" /> {{ $t('nav.english') }}
           </b-dropdown-item>
-          <b-dropdown-item href="#">
-            <country-flag country="tr" size="small" /> Turkish
+          <b-dropdown-item href="#" @click="switchLocale('tr')">
+            <country-flag country="tr" size="small" /> {{ $t('nav.turkish') }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -63,6 +68,12 @@ export default {
     this.captureEvent();
   },
   methods: {
+    switchLocale(locale) {
+      if (this.$i18n.locale !== locale) {
+        this.$i18n.locale = locale;
+        this.$store.commit('setLang', locale)
+      }
+    },
     logout() {
       moralis.User.logOut().then(() => {
         this.$store.commit("setAuthentication", null);

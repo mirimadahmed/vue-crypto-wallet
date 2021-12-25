@@ -1,0 +1,91 @@
+{
+    "auth": {
+        "login": {
+            "info": "GERİ HOŞ GELDİNİZ!",
+            "heading": "Mevcut SARDIS cüzdanınıza buradan erişin.",
+            "button": "CÜZDAN ERİŞİMİ",
+            "main": "SARDIS CÜZDANINIZA ERİŞİN",
+            "dont_have_wallet": "Cüzdanınız yok mu?",
+            "forgot_password": "Şifrenizi mi unuttunuz? Anımsatıcı kullanarak sıfırlayın",
+            "username_label": "Kullanıcı adı:",
+            "password_label": "Parola:",
+            "cancel": "İPTAL"
+
+        },
+        "signup": {
+            "info": "SARDIS'TE YENİ MİSİNİZ?",
+            "heading": "SARDIS göndermek ve almak için yeni bir cüzdan oluşturun.",
+            "button": "CREATE NEW WALLET",
+            "main": "SETUP NEW SARDIS WALLET",
+            "have_wallet": "Already have a wallet?",
+            "username_label": "Username:",
+            "username_placeholder": "Give yourself a unique username",
+            "password_label": "Password:",
+            "confirm_password_label": "Confirm Password:",
+            "confirm_password_placeholder": "Enter again.",
+            "referral_label": "Referred By:",
+            "referral_placeholder": "Who referred you?",
+            "cancel": "CANCEL"
+        },
+        "setup": {
+            "heading": "Setup your email and other information.",
+            "email_label": "Email:",
+            "email_placeholder": "Let's setup an email?",
+            "name_label": "Name:",
+            "name_placeholder": "What do they call you?",
+            "surname_label": "Surname:",
+            "surname_placeholder": "What's your surname?",
+            "button": "SET DETAILS"
+        },
+        "onboard": {
+            "heading": "This is your key phrase.",
+            "lead": "Use these 24 words in sequential order to recover your SARDIS Wallet",
+            "sub_heading": "ATTENTION!",
+            "info": "STORE THIS KEY PHRASE IN A SECURE LOCATION. ANYONE WITH THIS KEY PHRASE CAN ACCESS YOUR AVALANCHE WALLET. THERE IS NO WAY TO RECOVER LOST KEY PHRASES.",
+            "checkbox": "I wrote down my key phrase in a secure location.",
+            "btn": "ACCESS WALLET"
+        },
+        "2fa": {
+            "heading": "Setup 2FA",
+            "qr": "QR Code:",
+            "otp_label": "OTP:",
+            "otp_placeholder": "Scan QR Code in Google Authenticator and enter OTP.",
+            "button": "Enable 2FA",
+            "verify_heading": "Verify 2FA Before Sending",
+            "verify_otp_label": "OTP:",
+            "verify_otp_placeholder": "Enter OTP from Google Authenticator here"
+        }
+    },
+    "wallet": {
+        "your_wallet": "Your Wallet",
+        "total_balance": "Total SRDS Balance",
+        "assets": "Assets",
+        "transactions": "Transactions",
+        "assets_empty_message": "It's empty here. Send some SRDS to your wallet.",
+        "transactions_empty_message": "Send or receive something to see your transactions.",
+        "view_explorer": "View on explorer"
+    },
+    "referral": {
+        "heading": "Refer Sardis to your friends, you both earn 10% on their first purchase.",
+        "unique_link": "Your unique link: ",
+        "referrals_heading": "Friends who have signed up with your unique link",
+        "referrals_empty_message": "Feeling lonely here? You can invite your friends to join Sardis",
+        "rewards_heading": "Rewards earned",
+        "rewards_empty_message": "You haven't earned any rewards yet."
+    },
+    "nav": {
+        "wallet": "Wallet",
+        "referrals": "Referrals",
+        "logout": "Logout",
+        "turkish": "Turkce",
+        "english": "Englizce"
+    },
+    "send": {
+        "heading": "Send Assets",
+        "to": "Send to:",
+        "token": "Token:",
+        "amount": "Amount:",
+        "gas_fee": "Gas Fee:",
+        "button": "Send"
+    }
+}

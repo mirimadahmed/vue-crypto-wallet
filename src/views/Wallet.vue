@@ -10,7 +10,7 @@
     <div class="col-md-10 m-auto bg-light">
       <div class="row font-weight-bold px-2 text-center" v-if="!isLoading">
         <div class="col-md-6 my-3">
-          <h2>Your Wallet</h2>
+          <h2>{{ $t("wallet.your_wallet") }}</h2>
           <img
             src="../assets/illustration-other 4.png"
             alt="graph-3"
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="col-md-6 my-3">
-          <h2>Total SRDS Balance</h2>
+          <h2>{{ $t("wallet.total_balance") }}</h2>
           <img
             src="../assets/illustration-graph 3.png"
             alt="graph-4"
@@ -42,7 +42,7 @@
     <div class="col-md-10 m-auto p-0">
       <div class="w-100 bg-light my-4">
         <b-tabs content-class="mt-3" justified>
-          <b-tab title="Assets" active>
+          <b-tab  :title="`${ $t('wallet.assets')}`" active>
             <div class="col-12 p-2 text-center">
               <b-table
                 class="m-0"
@@ -63,11 +63,11 @@
                 </template>
               </b-table>
               <p v-if="assets.length === 0">
-                It's empty here. Send some SRDS to your wallet.
+                {{ $t("wallet.assets_empty_message") }}
               </p>
             </div>
           </b-tab>
-          <b-tab title="Transactions">
+          <b-tab :title="`${ $t('wallet.transactions')}`">
             <div class="col-12 p-2 text-center">
               <b-table
                 class="m-0"
@@ -95,12 +95,15 @@
                   <a
                     target="_blank"
                     :href="`https://testnet.snowtrace.io/tx/${data.item.transaction}`"
-                    >View on explorer <b-icon icon="link45deg"
+                  >
+                    {{ $t("wallet.view_explorer") }}
+
+                    <b-icon icon="link45deg"
                   /></a>
                 </template>
               </b-table>
               <p v-if="transactions.length === 0">
-                Send or receive something to see your transactions.
+                {{ $t("wallet.transactions_empty_message") }}
               </p>
             </div>
           </b-tab>

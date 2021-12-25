@@ -5,25 +5,31 @@
         <div class="row">
           <div class="col-md-8 align-self-center">
             <h4>
-              Refer Sardis to your friends, you both earn 10% on their first
-              purchase.
+              {{ $t("referral.heading") }}
             </h4>
             <div class="col-md-12 my-3">
-              <p style="overflow-wrap: break-word;">
+              <p style="overflow-wrap: break-word">
                 <copy-to-clipboard
-                  :text="`https://wallet-app-sardis.herokuapp.com/refer/${user.get('email')}`"
+                  :text="`https://wallet-app-sardis.herokuapp.com/refer/${user.get(
+                    'email'
+                  )}`"
                   @copy="handleCopy"
                 >
                   <a href="#" class="mr-2">
                     <b-icon icon="clipboard-check"></b-icon>
                   </a>
                 </copy-to-clipboard>
-                Your unique link:
+                {{ $t("referral.unique_link") }}
+
                 <a
-                  :href="`https://wallet-app-sardis.herokuapp.com/refer/${user.get('email')}`"
+                  :href="`https://wallet-app-sardis.herokuapp.com/refer/${user.get(
+                    'email'
+                  )}`"
                   target="_blank"
                 >
-                  https://wallet-app-sardis.herokuapp.com/refer/{{ user.get('email') }}
+                  https://wallet-app-sardis.herokuapp.com/refer/{{
+                    user.get("email")
+                  }}
                 </a>
               </p>
             </div>
@@ -42,7 +48,7 @@
     <div class="row mx-0">
       <div class="col-md-6 px-5 mb-5 refer-box">
         <div class="bg-light p-3">
-          <h5>Friends who have signed up with your unique link</h5>
+          <h5>{{ $t("referral.referrals_heading") }}</h5>
           <div class="text-center my-5" v-if="isLoadingReferrals">
             <b-spinner variant="primary" label="Spinning" small></b-spinner>
           </div>
@@ -53,14 +59,14 @@
               :fields="['user', 'date']"
             ></b-table>
             <p v-if="referrals.length === 0">
-              Feeling lonely here? You can invite your friends to join Sardis
+              {{ $t("referral.referrals_empty_message") }}
             </p>
           </div>
         </div>
       </div>
       <div class="col-md-6 px-5 refer-box">
         <div class="bg-light p-3">
-          <h5>Rewards earned</h5>
+          <h5>{{ $t("referral.rewards_heading") }}</h5>
           <div class="text-center my-5" v-if="isLoadingRewards">
             <b-spinner variant="primary" label="Spinning" small></b-spinner>
           </div>
@@ -71,7 +77,7 @@
               :fields="['amount', 'status', 'date']"
             ></b-table>
             <p v-if="rewards.length === 0">
-              You haven't earned any rewards yet.
+              {{ $t("referral.rewards_empty_message") }}
             </p>
           </div>
         </div>
@@ -124,7 +130,9 @@ export default {
             this.rewards.push({
               amount: web3.utils.fromWei(result.get("amount").toString()),
               status: result.get("paid") ? "Paid" : "Pending",
-              date: new Date(result.get("createdAt")).toLocaleDateString("en-US"),
+              date: new Date(result.get("createdAt")).toLocaleDateString(
+                "en-US"
+              ),
             });
           });
         }
@@ -140,7 +148,9 @@ export default {
           results.forEach((result) => {
             this.referrals.push({
               user: result.get("userto"),
-              date: new Date(result.get("createdAt")).toLocaleDateString("en-US"),
+              date: new Date(result.get("createdAt")).toLocaleDateString(
+                "en-US"
+              ),
             });
           });
         }

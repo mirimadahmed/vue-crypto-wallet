@@ -24,5 +24,8 @@ export default {
   components: {
     Navbar,
   },
+  created() {
+    this.$i18n.locale = this.$store.getters.lang;
+  },
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="">
     <div class="row p-4 login-wrapper">
       <div class="col-12">
-        <h2 class="p-2 mt-3 text-center">ACCESS YOUR {{ $name }} WALLET</h2>
+        <h2 class="p-2 mt-3 text-center">{{ $t('auth.login.main') }}</h2>
       </div>
       <div class="col-12">
         <a
@@ -10,7 +10,7 @@
           href="#"
           class="text-center font-weight-lighter text-secondary"
         >
-          <p>Don't have a wallet?</p>
+          <p>{{ $t('auth.login.dont_have_wallet') }}</p>
         </a>
       </div>
       <div class="col-12" v-if="!usingMnemonic">
@@ -19,7 +19,7 @@
           href="#"
           class="text-center font-weight-lighter text-secondary"
         >
-          <p>Forgot password? Reset using mnemonic</p>
+          <p>{{ $t('auth.login.forgot_password') }}</p>
         </a>
       </div>
       <div class="col-12" v-else>
@@ -28,38 +28,38 @@
           href="#"
           class="text-center font-weight-lighter text-secondary"
         >
-          <p>Access using username and password</p>
+          <p>{{ $t('auth.login.know_password') }}</p>
         </a>
       </div>
       <div class="col-12" v-if="!usingMnemonic">
-        <b-form-group id="input-group-1" label="Username:" label-for="input-1">
+        <b-form-group id="input-group-1" :label="`${ $t('auth.login.username_label') }`" label-for="input-1">
           <b-form-input
             id="input-1"
             v-model="form.email"
             type="text"
-            placeholder="Enter username"
+            :placeholder="`${ $t('auth.login.username_placeholder') }`"
             required
           ></b-form-input>
         </b-form-group>
       </div>
       <div class="col-12" v-if="!usingMnemonic">
-        <b-form-group id="input-group-2" label="Password:" label-for="input-1">
+        <b-form-group id="input-group-2" :label="`${ $t('auth.login.password_label') }`" label-for="input-1">
           <b-form-input
             id="input-2"
             v-model="form.password"
             type="password"
-            placeholder="Enter password"
+            :placeholder="`${ $t('auth.login.password_placeholder') }`"
             required
           ></b-form-input>
         </b-form-group>
       </div>
       <div class="col-12" v-if="usingMnemonic">
-        <b-form-group id="input-group-2" label="Mnemonic:" label-for="input-1">
+        <b-form-group id="input-group-2" :label="`${ $t('auth.login.mnemonic_label') }`" label-for="input-1">
           <b-textarea
             id="input-2"
             v-model="form.mnemonic"
             type="text"
-            placeholder="Enter mnemonic"
+            :placeholder="`${ $t('auth.login.mnemonic_placeholder') }`"
             required
           >
           </b-textarea>
@@ -82,7 +82,7 @@
             v-if="isLoading"
           ></span>
           <span class="sr-only" v-if="isLoading">Loading...</span>
-          ACCESS YOUR WALLET
+          {{ $t('auth.login.button') }}
         </b-button>
       </div>
       <div class="col-12 pt-5">
@@ -91,7 +91,9 @@
           href="#"
           class="text-center font-weight-light text-info"
         >
-          <p>CANCEL</p>
+          <p>
+            {{ $t('auth.login.cancel') }}
+          </p>
         </a>
       </div>
     </div>

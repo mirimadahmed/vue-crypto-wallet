@@ -43,27 +43,22 @@
               />
             </div>
             <div class="col-12">
-              <h1>This is your key phrase.</h1>
+              <h1>{{ $t("onboard.heading") }}</h1>
               <p>
-                Use these 24 words in sequential order to recover your
-                {{ $name }}
-                Wallet
+                {{ $t("onboard.lead") }}
               </p>
             </div>
             <div class="col-12">
-              <h4 class="text-danger">ATTENTION!</h4>
+              <h4 class="text-danger">{{ $t("onboard.sub_heading") }}</h4>
 
               <h6 class="text-muted">
-                STORE THIS KEY PHRASE IN A SECURE LOCATION. ANYONE WITH THIS KEY
-                PHRASE CAN ACCESS YOUR AVALANCHE WALLET. THERE IS NO WAY TO
-                RECOVER LOST KEY PHRASES.
+                {{ $t("onboard.info") }}
               </h6>
             </div>
             <div class="col-12 mt-4">
-              <b-form-checkbox size="lg" v-model="secured"
-                >I wrote down my key phrase in a secure
-                location.</b-form-checkbox
-              >
+              <b-form-checkbox size="lg" v-model="secured">
+                {{ $t("onboard.checkbox") }}
+              </b-form-checkbox>
             </div>
             <div class="col-12 my-3">
               <button
@@ -71,7 +66,7 @@
                 @click="access"
                 :disabled="!secured"
               >
-                ACCESS WALLET
+                {{ $t("onboard.btn") }}
               </button>
             </div>
           </div>

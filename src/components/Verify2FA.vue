@@ -2,15 +2,15 @@
   <div>
     <div class="row p-4 m-0 mt-5 login-wrapper bg-light">
       <div class="col-12">
-        <h2 class="p-2 mt-3 text-center">Verify 2FA Before Sending</h2>
+        <h2 class="p-2 mt-3 text-center">{{ $t('auth.2fa.verify_heading') }}</h2>
       </div>
       <div class="col-12">
-        <b-form-group id="input-group-1" label="Enter OTP:" label-for="input-1">
+        <b-form-group id="input-group-1" :label="`${ $t('auth.2fa.verify_otp_label') }`" label-for="input-1">
           <b-form-input
             id="input-1"
             v-model="state"
             type="text"
-            placeholder="OTP"
+            :placeholder="`${ $t('auth.2fa.verify_otp_placeholder') }`"
             required
           ></b-form-input>
         </b-form-group>
@@ -32,7 +32,7 @@
             v-if="isLoading"
           ></span>
           <span class="sr-only" v-if="isLoading">Loading...</span>
-          Verify
+          {{ $t('auth.2fa.verify_button') }}
         </b-button>
       </div>
     </div>

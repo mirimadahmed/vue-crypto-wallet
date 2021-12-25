@@ -2,12 +2,12 @@
   <div class="col-md-6 m-auto">
     <div class="row p-4 m-0 mt-5 login-wrapper bg-light">
       <div class="col-12">
-        <h2 class="p-2 mt-3 text-center">Setup 2FA</h2>
+        <h2 class="p-2 mt-3 text-center">{{ $t('auth.2fa.heading') }}</h2>
       </div>
       <div class="col-12">
         <b-form-group
           id="input-group-2"
-          label="QR Code:"
+          :label="`${ $t('auth.2fa.qr') }`"
           label-for="input-2"
           class="text-center"
         >
@@ -15,12 +15,12 @@
         </b-form-group>
       </div>
       <div class="col-12">
-        <b-form-group id="input-group-1" label="OTP:" label-for="input-1">
+        <b-form-group id="input-group-1" :label="`${ $t('auth.2fa.otp_label') }`" label-for="input-1">
           <b-form-input
             id="input-1"
             v-model="state"
             type="text"
-            placeholder="OTP"
+            :placeholder="`${ $t('auth.2fa.otp_placeholder') }`"
             required
           ></b-form-input>
         </b-form-group>
@@ -42,7 +42,7 @@
             v-if="isLoading"
           ></span>
           <span class="sr-only" v-if="isLoading">Loading...</span>
-          Enable 2FA
+          {{ $t('auth.2fa.button') }}
         </b-button>
       </div>
     </div>

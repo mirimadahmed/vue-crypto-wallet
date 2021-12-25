@@ -1,0 +1,102 @@
+{
+    "auth": {
+        "login": {
+            "info": "WELCOME BACK!",
+            "heading": "Access your existing SARDIS wallet here.",
+            "button": "ACCESS WALLET",
+            "main": "ACCESS YOUR SARDIS WALLET",
+            "dont_have_wallet": "Don't have a wallet?",
+            "forgot_password": "Forgot password? Reset using mnemonic",
+            "know_password": "Access using username and password",
+            "username_label": "Username:",
+            "username_placeholder": "Enter Username:",
+            "password_label": "Password:",
+            "password_placeholder": "Enter Password:",
+            "mnemonic_label": "Mnemonic",
+            "mnemonic_placeholder": "Enter space separated mnemonic key",
+            "cancel": "CANCEL"
+
+        },
+        "signup": {
+            "info": "NEW TO SARDIS?",
+            "heading": "Create a new wallet to send and receive SARDIS.",
+            "button": "CREATE NEW WALLET",
+            "main": "SETUP NEW SARDIS WALLET",
+            "have_wallet": "Already have a wallet?",
+            "username_label": "Username:",
+            "username_placeholder": "Give yourself a unique username",
+            "password_label": "Password:",
+            "password_placeholder": "Enter Password:",
+            "confirm_password_label": "Confirm Password:",
+            "confirm_password_placeholder": "Enter again.",
+            "confirm_password_description": "Enter same password again.",
+            "referral_label": "Referred By:",
+            "referral_placeholder": "Referral",
+            "referral_description": "Who referred you?",
+            "cancel": "CANCEL"
+        },
+        "setup": {
+            "heading": "Setup your email and other information.",
+            "email_label": "Email:",
+            "email_placeholder": "Let's setup an email?",
+            "name_label": "Name:",
+            "name_placeholder": "Enter name",
+            "name_description": "What do they call you?",
+            "surname_label": "Surname:",
+            "surname_placeholder": "Enter surname",
+            "surname_description": "What's your surname?",
+            "button": "SET DETAILS"
+        },
+        "onboard": {
+            "heading": "This is your key phrase.",
+            "lead": "Use these 24 words in sequential order to recover your SARDIS Wallet",
+            "sub_heading": "ATTENTION!",
+            "info": "STORE THIS KEY PHRASE IN A SECURE LOCATION. ANYONE WITH THIS KEY PHRASE CAN ACCESS YOUR AVALANCHE WALLET. THERE IS NO WAY TO RECOVER LOST KEY PHRASES.",
+            "checkbox": "I wrote down my key phrase in a secure location.",
+            "btn": "ACCESS WALLET"
+        },
+        "2fa": {
+            "heading": "Setup 2FA",
+            "qr": "QR Code:",
+            "otp_label": "OTP:",
+            "otp_placeholder": "Scan QR Code in Google Authenticator and enter OTP.",
+            "button": "Enable 2FA",
+            "verify_heading": "Verify 2FA Before Sending",
+            "verify_otp_label": "OTP:",
+            "verify_otp_placeholder": "Enter OTP from Google Authenticator here",
+            "verify_button": "Verify and send"
+        }
+    },
+    "wallet": {
+        "your_wallet": "Your Wallet",
+        "total_balance": "Total SRDS Balance",
+        "assets": "Assets",
+        "transactions": "Transactions",
+        "assets_empty_message": "It's empty here. Send some SRDS to your wallet.",
+        "transactions_empty_message": "Send or receive something to see your transactions.",
+        "view_explorer": "View on explorer"
+    },
+    "referral": {
+        "heading": "Refer Sardis to your friends, you both earn 10% on their first purchase.",
+        "unique_link": "Your unique link: ",
+        "referrals_heading": "Friends who have signed up with your unique link",
+        "referrals_empty_message": "Feeling lonely here? You can invite your friends to join Sardis",
+        "rewards_heading": "Rewards earned",
+        "rewards_empty_message": "You haven't earned any rewards yet."
+    },
+    "nav": {
+        "wallet": "Wallet",
+        "referrals": "Referrals",
+        "logout": "Logout",
+        "turkish": "Turkish",
+        "english": "English"
+    },
+    "send": {
+        "heading": "Send Assets",
+        "to": "Send to:",
+        "token": "Token:",
+        "amount": "Amount:",
+        "gas_fee": "Gas Fee:",
+        "button": "Send"
+    }
+}

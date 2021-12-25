@@ -13,12 +13,12 @@
                 />
               </div>
               <div class="col-8">
-                <p>WELCOME BACK!</p>
-                <h4>Access your existing {{ $name }} wallet here.</h4>
+                <p>{{ $t('auth.login.info') }}</p>
+                <h4>{{ $t('auth.login.heading') }}</h4>
               </div>
               <div class="col-12 pt-5">
                 <button class="btn btn-secondary btn-small" @click="step = 1">
-                  ACCESS WALLET
+                  {{ $t('auth.login.button') }}
                 </button>
               </div>
             </div>
@@ -33,12 +33,12 @@
                 />
               </div>
               <div class="col-8">
-                <p>NEW TO {{ $name }}?</p>
-                <h4>Create a new wallet to send and receive {{ $name }}.</h4>
+                <p>{{ $t('auth.signup.info') }}</p>
+                <h4>{{ $t('auth.signup.heading') }}</h4>
               </div>
               <div class="col-12 pt-5">
                 <button class="btn btn-primary btn-small" @click="step = 2">
-                  CREATE NEW WALLET
+                  {{ $t('auth.signup.button') }}
                 </button>
               </div>
             </div>

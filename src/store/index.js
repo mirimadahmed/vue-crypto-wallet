@@ -9,7 +9,8 @@ const store = new Vuex.Store({
     plugins: [createPersistedState()],
     state: {
         user: null,
-        referral: null
+        referral: null,
+        lang: "en"
     },
     getters: {
         isLoggedIn(state) {
@@ -17,7 +18,10 @@ const store = new Vuex.Store({
         },
         referredBy(state) {
             return state.referral
-        }
+        },
+        lang(state) {
+            return state.lang
+        },
     },
     mutations: {
         setAuthentication(state, user) {
@@ -25,6 +29,9 @@ const store = new Vuex.Store({
         },
         setReferral(state, referral) {
             state.referral = referral;
+        },
+        setLang(state, lang) {
+            state.lang = lang;
         }
     }
 })

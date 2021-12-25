@@ -3,18 +3,20 @@
     <div v-if="otpVerification" class="auth col-12 pt-5 px-5 auth-child">
       <div class="row m-auto px-5 rounded-lg auth-boxes">
         <div class="bg-light p-3 m-auto auth-child-wrapper col-md-6">
-          <div class="col-md-12 text-center h1 p-3">Send Assets</div>
+          <div class="col-md-12 text-center h1 p-3">
+            {{ $t("send.heading") }}
+          </div>
           <div class="col-12">
             <b-form-group
               id="input-group-1"
-              label="Send to:"
+              :label="`${$t('send.to')}`"
               label-for="input-1"
             >
               <b-form-input
                 id="input-1"
                 v-model="form.toAddress"
                 type="text"
-                placeholder="Enter address"
+                :placeholder="`${$t('send.to')}`"
                 :state="addressValid"
                 @keyup="estimateGas"
                 required
@@ -22,7 +24,11 @@
             </b-form-group>
           </div>
           <div class="col-12">
-            <b-form-group id="input-group-1" label="Token:" label-for="input-1">
+            <b-form-group
+              id="input-group-1"
+              :label="`${$t('send.token')}`"
+              label-for="input-1"
+            >
               <b-form-select
                 id="input-1"
                 v-model="token"
@@ -30,7 +36,7 @@
                 @input="estimateGas"
                 text-field="name"
                 value-field="token"
-                placeholder="Enter token"
+                :placeholder="`${$t('send.token')}`"
                 required
                 :state="tokenValid"
               ></b-form-select>
@@ -39,7 +45,7 @@
           <div class="col-12">
             <b-form-group
               id="input-group-2"
-              label="Amount:"
+              :label="`${$t('send.amount')}`"
               label-for="input-2"
             >
               <b-form-input
@@ -47,7 +53,7 @@
                 v-model="form.amount"
                 @keyup="estimateGas"
                 type="text"
-                placeholder="Enter amount"
+                :placeholder="`${$t('send.amount')}`"
                 required
                 :state="amountValid"
               ></b-form-input>
@@ -56,7 +62,7 @@
           <div class="col-12">
             <b-form-group
               id="input-group-2"
-              label="Gas Fee:"
+              :label="`${$t('send.gas_fee')}`"
               label-for="input-3"
             >
               <b-form-input
@@ -87,7 +93,7 @@
                 v-if="isLoading"
               ></span>
               <span class="sr-only" v-if="isLoading">Loading...</span>
-              Send
+              {{ $t("send.button") }}
             </b-button>
           </div>
         </div>

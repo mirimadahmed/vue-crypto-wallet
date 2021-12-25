@@ -2,7 +2,9 @@
   <div>
     <div class="row p-4" v-if="step === 1">
       <div class="col-12">
-        <h2 class="p-2 mt-3 text-center">SETUP NEW {{ $name }} WALLET</h2>
+        <h2 class="p-2 mt-3 text-center">
+          {{ $t("auth.signup.main") }}
+        </h2>
       </div>
       <div class="col-12">
         <a
@@ -10,13 +12,15 @@
           href="#"
           class="text-center font-weight-lighter text-secondary"
         >
-          <p>Already have a wallet?</p>
+          <p>
+            {{ $t("auth.signup.have_wallet") }}
+          </p>
         </a>
       </div>
       <div class="col-12">
         <b-form-group
           id="input-group-3"
-          label="Username:"
+          :label="`${$t('auth.signup.username_label')}`"
           label-for="input-1"
           description="Give yourself a unique username"
         >
@@ -24,18 +28,22 @@
             id="input-3"
             v-model="form.username"
             type="text"
-            placeholder="Enter username"
+            :placeholder="`${$t('auth.signup.username_placeholder')}`"
             required
           ></b-form-input>
         </b-form-group>
       </div>
       <div class="col-12">
-        <b-form-group id="input-group-4" label="Password:" label-for="input-1">
+        <b-form-group
+          id="input-group-4"
+          :label="`${$t('auth.signup.password_label')}`"
+          label-for="input-1"
+        >
           <b-form-input
             id="input-4"
             v-model="form.password"
             type="password"
-            placeholder="Enter password"
+            :placeholder="`${$t('auth.signup.password_placeholder')}`"
             :state="passwordConfirmationRule"
             required
           ></b-form-input>
@@ -49,15 +57,15 @@
       <div class="col-12">
         <b-form-group
           id="input-group-5"
-          label="Confirm Password:"
+          :label="`${$t('auth.signup.confirm_password_label')}`"
           label-for="input-1"
-          description="Enter again."
+          :description="`${$t('auth.signup.confirm_password_description')}`"
         >
           <b-form-input
             id="input-5"
             v-model="form.confirmpassword"
             type="password"
-            placeholder="Confirm password"
+            :placeholder="`${$t('auth.signup.confirm_password_placeholder')}`"
             :state="confirmPasswordConfirmationRule"
             required
           ></b-form-input>
@@ -66,15 +74,15 @@
       <div class="col-12">
         <b-form-group
           id="input-group-7"
-          label="Referred By:"
+          :label="`${$t('auth.signup.referral_label')}`"
           label-for="input-1"
-          description="Who referred you?"
+          :description="`${$t('auth.signup.referral_description')}`"
         >
           <b-form-input
             id="input-7"
             v-model="form.referral"
             type="email"
-            placeholder="Enter email of referral"
+            :placeholder="`${$t('auth.signup.referral_placeholder')}`"
             required
           ></b-form-input>
         </b-form-group>
@@ -100,25 +108,27 @@
             v-if="isLoading"
           ></span>
           <span class="sr-only" v-if="isLoading">Loading...</span>
-          CREATE WALLET
+          {{ $t("auth.signup.button") }}
         </b-button>
       </div>
       <div class="col-12 pt-5">
         <a @click.prevent="$emit('back')" href="#">
-          <p class="text-center text-muted font-weight-light">CANCEL</p>
+          <p class="text-center text-muted font-weight-light">
+            {{ $t("auth.signup.cancel") }}
+          </p>
         </a>
       </div>
     </div>
     <div class="row p-4" v-if="step === 2">
       <div class="col-12">
         <h2 class="p-2 mt-3 text-center">
-          Setup your email and other information.
+          {{ $t("auth.setup.heading") }}
         </h2>
       </div>
       <div class="col-12">
         <b-form-group
           id="input-group-8"
-          label="Email:"
+          :label="`${$t('auth.setup.email_label')}`"
           label-for="input-1"
           description="Let's setup an email?"
         >
@@ -126,7 +136,7 @@
             id="input-8"
             v-model="form.email"
             type="email"
-            placeholder="Enter email"
+            :placeholder="`${$t('auth.setup.email_placeholder')}`"
             required
           ></b-form-input>
         </b-form-group>
@@ -134,15 +144,15 @@
       <div class="col-12">
         <b-form-group
           id="input-group-6"
-          label="Name:"
+          :label="`${$t('auth.setup.name_label')}`"
           label-for="input-1"
-          description="What do they call you?"
+          :description="`${$t('auth.setup.name_description')}`"
         >
           <b-form-input
             id="input-6"
             v-model="form.name"
             type="text"
-            placeholder="Enter name"
+            :placeholder="`${$t('auth.setup.name_placeholder')}`"
             required
           ></b-form-input>
         </b-form-group>
@@ -150,15 +160,15 @@
       <div class="col-12">
         <b-form-group
           id="input-group-7"
-          label="Surname:"
+          :label="`${$t('auth.setup.surname_label')}`"
           label-for="input-1"
-          description="What's your surname?"
+          :description="`${$t('auth.setup.surname_description')}`"
         >
           <b-form-input
             id="input-7"
             v-model="form.surname"
             type="text"
-            placeholder="Enter surname"
+            :placeholder="`${$t('auth.setup.surname_placeholder')}`"
             required
           ></b-form-input>
         </b-form-group>
@@ -180,7 +190,7 @@
             v-if="isLoading"
           ></span>
           <span class="sr-only" v-if="isLoading">Loading...</span>
-          SET DETAILS
+          {{ $t("auth.setup.button") }}
         </b-button>
       </div>
     </div>
@@ -221,7 +231,6 @@ export default {
       // If we reached here, this means we have a logged in user who needs to set details.
       this.step = 2;
     }
-
   },
   computed: {
     passwordConfirmationRule() {
@@ -281,9 +290,9 @@ export default {
         const referrals = new Referrals();
         referrals.set("userfrom", referral);
         referrals.set("userto", user);
-        referrals.save()
+        referrals.save();
       }
-    }
+    },
   },
 };
 </script>

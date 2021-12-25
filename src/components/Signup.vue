@@ -253,22 +253,7 @@
           ></b-form-input>
         </b-form-group>
       </div>
-      <div class="col-12">
-        <b-form-group
-          id="input-group-7"
-          :label="`${$t('auth.setup.country_label')}`"
-          label-for="input-1"
-          :description="`${$t('auth.setup.country_description')}`"
-        >
-          <b-form-input
-            id="input-7"
-            v-model="form.country"
-            type="text"
-            :placeholder="`${$t('auth.setup.country_placeholder')}`"
-            required
-          ></b-form-input>
-        </b-form-group>
-      </div>
+
       <div class="col-12">
         <b-form-group
           id="input-group-7"

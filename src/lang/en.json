@@ -79,7 +79,11 @@
             "file_label": "Passport or Government National ID (Scan Front):",
             "file_placeholder": "Enter Passport or Government National ID (Scan Front)",
             "file_description": "What's your Passport or Government National ID (Scan Front)?",
-            "button": "SUBMIT KYC"
+            "button": "SUBMIT KYC",
+            "pending_heading": "KYC APPLICATION PENDING",
+            "pending_lead": "Your KYC is pending approval from admin.",
+            "rejected_heading": "KYC APPLICATION REJECTED",
+            "rejected_lead": "Your KYC is rejected. Please check your email for details."
         },
         "onboard": {
             "heading": "This is your key phrase.",

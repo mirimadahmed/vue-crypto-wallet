@@ -11,7 +11,10 @@
         </router-link>
       </b-navbar-brand>
 
-      <b-navbar-toggle target="nav-collapse" v-if="$store.getters.isLoggedIn"></b-navbar-toggle>
+      <b-navbar-toggle
+        target="nav-collapse"
+        v-if="$store.getters.isLoggedIn"
+      ></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav v-if="$store.getters.isLoggedIn">
         <!-- Right aligned nav items -->
@@ -19,10 +22,10 @@
           <!-- <b-nav-item href="#">
             <router-link to="/buy">{{ $t("nav.buy") }}</router-link>
           </b-nav-item> -->
-          <b-nav-item href="#">
+          <b-nav-item href="#" v-if="!kycPending">
             <router-link to="/wallet">{{ $t("nav.wallet") }}</router-link>
           </b-nav-item>
-          <b-nav-item href="#">
+          <b-nav-item href="#" v-if="!kycPending">
             <router-link to="/refferals">{{ $t("nav.referrals") }}</router-link>
           </b-nav-item>
           <b-nav-item href="#">
@@ -62,14 +65,23 @@ export default {
   components: {
     CountryFlag,
   },
+  computed: {
+    kycPending() {
+      return this.user.get("kyc") === 0 || this.user.get("kyc") === 1;
+    }
+  },
   data() {
     return {
       deferredPrompt: null,
       count: 0,
+      user: null
     };
   },
   mounted() {
     this.captureEvent();
+  },
+  created() {
+    this.user = moralis.User.current();
   },
   methods: {
     switchLocale(locale) {

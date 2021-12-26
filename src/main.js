@@ -13,7 +13,7 @@ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './registerServiceWorker'
-
+import MoralisFactory from './moralis'
 Vue.use(VueI18n)
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
@@ -30,6 +30,12 @@ const i18n = new VueI18n({
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isLoggedIn) next({ name: 'Auth' })
     else if (store.getters.isLoggedIn && to.name === 'Auth') next({ name: 'Wallet' })
+    else if (store.getters.isLoggedIn && to.name !== 'Wallet') {
+        // Check if user has approved kyc
+        if (MoralisFactory().User.current().get("kyc") === 2) next()
+        else next({ name: 'Wallet' })
+        // else send to wallet
+    }
     else next()
 })
 

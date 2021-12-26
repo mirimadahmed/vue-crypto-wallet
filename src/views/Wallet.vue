@@ -1,125 +1,142 @@
 <template>
   <div class="wallet row px-5 mt-5">
-    <div class="row text-left col-12 p-0 m-0" v-if="admin_message">
-      <div class="col-md-10 m-auto p-0">
-        <div class="alert alert-success" role="alert">
-          {{ admin_message }}
+    <template v-if="kycPending">
+      <KYCPending />
+    </template>
+    <template v-else-if="kycRejected">
+      <KYCRejected />
+    </template>
+    <template v-else>
+      <div class="row text-left col-12 p-0 m-0" v-if="admin_message">
+        <div class="col-md-10 m-auto p-0">
+          <div class="alert alert-success" role="alert">
+            {{ admin_message }}
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-10 m-auto bg-light">
-      <div class="row font-weight-bold px-2 text-center" v-if="!isLoading">
-        <div class="col-md-6 my-3">
-          <h2>{{ $t("wallet.your_wallet") }}</h2>
-          <img
-            src="../assets/illustration-other 4.png"
-            alt="graph-3"
-            class="w-25"
-          />
-          <div class="row">
-            <h6
-              class="text-secondary col pt-2"
-              style="overflow-wrap: break-word"
-            >
-              {{ user.get("wallet") }}
-              <copy-to-clipboard :text="user.get('wallet')" @copy="handleCopy">
-                <a href="#"><b-icon icon="clipboard-check"></b-icon></a>
-              </copy-to-clipboard>
+      <div class="col-md-10 m-auto bg-light">
+        <div class="row font-weight-bold px-2 text-center" v-if="!isLoading">
+          <div class="col-md-6 my-3">
+            <h2>{{ $t("wallet.your_wallet") }}</h2>
+            <img
+              src="../assets/illustration-other 4.png"
+              alt="graph-3"
+              class="w-25"
+            />
+            <div class="row">
+              <h6
+                class="text-secondary col pt-2"
+                style="overflow-wrap: break-word"
+              >
+                {{ user.get("wallet") }}
+                <copy-to-clipboard
+                  :text="user.get('wallet')"
+                  @copy="handleCopy"
+                >
+                  <a href="#"><b-icon icon="clipboard-check"></b-icon></a>
+                </copy-to-clipboard>
+              </h6>
+            </div>
+          </div>
+          <div class="col-md-6 my-3">
+            <h2>{{ $t("wallet.total_balance") }}</h2>
+            <img
+              src="../assets/illustration-graph 3.png"
+              alt="graph-4"
+              class="w-25"
+            />
+            <h6 class="text-secondary mr-0 pr-0 mb-0">
+              SRDS {{ userBalance }}
             </h6>
           </div>
         </div>
-        <div class="col-md-6 my-3">
-          <h2>{{ $t("wallet.total_balance") }}</h2>
-          <img
-            src="../assets/illustration-graph 3.png"
-            alt="graph-4"
-            class="w-25"
-          />
-          <h6 class="text-secondary mr-0 pr-0 mb-0">SRDS {{ userBalance }}</h6>
-        </div>
       </div>
-    </div>
-    <div class="col-md-10 m-auto p-0">
-      <div class="w-100 bg-light my-4">
-        <b-tabs content-class="mt-3" justified>
-          <b-tab :title="`${$t('wallet.assets')}`" active>
-            <div class="col-12 p-2 text-center">
-              <b-table
-                class="m-0"
-                hover
-                :items="assets"
-                :fields="['name', 'value', 'action']"
-              >
-                <template #cell(action)="data">
-                  <div class="h5">
-                    <a :href="`/send/${data.item.token}`"
-                      ><b-icon
-                        icon="arrow-up-right-square"
+      <div class="col-md-10 m-auto p-0">
+        <div class="w-100 bg-light my-4">
+          <b-tabs content-class="mt-3" justified>
+            <b-tab :title="`${$t('wallet.assets')}`" active>
+              <div class="col-12 p-2 text-center">
+                <b-table
+                  class="m-0"
+                  hover
+                  :items="assets"
+                  :fields="['name', 'value', 'action']"
+                >
+                  <template #cell(action)="data">
+                    <div class="h5">
+                      <a :href="`/send/${data.item.token}`"
+                        ><b-icon
+                          icon="arrow-up-right-square"
+                          class="text-success"
+                          size="large"
+                        ></b-icon
+                      ></a>
+                    </div>
+                  </template>
+                </b-table>
+                <p v-if="assets.length === 0">
+                  {{ $t("wallet.assets_empty_message") }}
+                </p>
+              </div>
+            </b-tab>
+            <b-tab :title="`${$t('wallet.transactions')}`">
+              <div class="col-12 p-2 text-center">
+                <b-table
+                  class="m-0"
+                  hover
+                  :items="transactions"
+                  :fields="['status', 'token', 'amount', 'transaction']"
+                >
+                  <template #cell(status)="data" class="align-self-start">
+                    <div class="h5">
+                      <b-icon
+                        v-if="data.item.status"
+                        icon="check"
                         class="text-success"
                         size="large"
-                      ></b-icon
-                    ></a>
-                  </div>
-                </template>
-              </b-table>
-              <p v-if="assets.length === 0">
-                {{ $t("wallet.assets_empty_message") }}
-              </p>
-            </div>
-          </b-tab>
-          <b-tab :title="`${$t('wallet.transactions')}`">
-            <div class="col-12 p-2 text-center">
-              <b-table
-                class="m-0"
-                hover
-                :items="transactions"
-                :fields="['status', 'token', 'amount', 'transaction']"
-              >
-                <template #cell(status)="data" class="align-self-start">
-                  <div class="h5">
-                    <b-icon
-                      v-if="data.item.status"
-                      icon="check"
-                      class="text-success"
-                      size="large"
-                    ></b-icon>
-                    <b-icon
-                      v-else
-                      icon="clock"
-                      class="text-info"
-                      size="large"
-                    ></b-icon>
-                  </div>
-                </template>
-                <template #cell(transaction)="data">
-                  <a
-                    target="_blank"
-                    :href="`https://testnet.snowtrace.io/tx/${data.item.transaction}`"
-                  >
-                    {{ $t("wallet.view_explorer") }}
+                      ></b-icon>
+                      <b-icon
+                        v-else
+                        icon="clock"
+                        class="text-info"
+                        size="large"
+                      ></b-icon>
+                    </div>
+                  </template>
+                  <template #cell(transaction)="data">
+                    <a
+                      target="_blank"
+                      :href="`https://testnet.snowtrace.io/tx/${data.item.transaction}`"
+                    >
+                      {{ $t("wallet.view_explorer") }}
 
-                    <b-icon icon="link45deg"
-                  /></a>
-                </template>
-              </b-table>
-              <p v-if="transactions.length === 0">
-                {{ $t("wallet.transactions_empty_message") }}
-              </p>
-            </div>
-          </b-tab>
-        </b-tabs>
+                      <b-icon icon="link45deg"
+                    /></a>
+                  </template>
+                </b-table>
+                <p v-if="transactions.length === 0">
+                  {{ $t("wallet.transactions_empty_message") }}
+                </p>
+              </div>
+            </b-tab>
+          </b-tabs>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 <script>
 import CopyToClipboard from "vue-copy-to-clipboard";
+import KYCPending from "@/components/KYCPending";
+import KYCRejected from "@/components/KYCRejected";
 import MoralisFactory from "@/moralis";
 const moralis = MoralisFactory();
 const web3 = new moralis.Web3();
 export default {
   components: {
     CopyToClipboard,
+    KYCPending,
+    KYCRejected
   },
   data() {
     return {
@@ -144,6 +161,12 @@ export default {
     this.manageAvaxTransactions();
   },
   computed: {
+    kycPending() {
+      return this.user.get("kyc") === 0;
+    },
+    kycRejected() {
+      return this.user.get("kyc") === 1;
+    },
     userBalance() {
       if (this.assets.length > 0) {
         const srds = this.assets.filter((asset) => asset.name === "SRDS");

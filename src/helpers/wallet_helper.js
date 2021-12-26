@@ -15,10 +15,10 @@ async function sendEth(
     amount, // in wei
     gasPrice,
     gasLimit) {
-    let fromAddr = '0x' + wallet.getEvmAddress()
+    let fromAddr = wallet.getAddressC().toLowerCase()
 
     let tx = await buildEvmTransferNativeTx(fromAddr, to, amount, gasPrice, gasLimit)
-
+    console.log(tx)
     let signedTx = await wallet.signEvm(tx)
 
     let txHex = signedTx.serialize().toString('hex')
@@ -52,9 +52,9 @@ async function estimateTxGas(wallet, tx) {
 async function estimateGas(wallet, to, amount, token) {
     let tx = token.createTransferTx(to, amount)
     let estGas = await tx.estimateGas({
-            from: wallet,
-        })
-        // Return 10% more
+        from: wallet,
+    })
+    // Return 10% more
     return Math.round(estGas * 1.1)
 }
 

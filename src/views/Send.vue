@@ -18,7 +18,7 @@
                 type="text"
                 :placeholder="`${$t('send.to')}`"
                 :state="addressValid"
-                @keyup="estimateGas"
+                @blur="estimateGas"
                 required
               ></b-form-input>
             </b-form-group>
@@ -33,12 +33,11 @@
                 id="input-1"
                 v-model="token"
                 :options="assets"
-                @input="estimateGas"
+                @input="tokenChange"
                 text-field="name"
                 value-field="token"
                 :placeholder="`${$t('send.token')}`"
                 required
-                :state="tokenValid"
               ></b-form-select>
             </b-form-group>
           </div>
@@ -51,7 +50,9 @@
               <b-form-input
                 id="input-2"
                 v-model="form.amount"
-                @keyup="estimateGas"
+                @blur="estimateGas"
+                @input="input"
+                @change="change"
                 type="text"
                 :placeholder="`${$t('send.amount')}`"
                 required
@@ -67,8 +68,8 @@
             >
               <b-form-input
                 id="input-3"
-                v-model="gasFee"
-                type="number"
+                v-model="gasFeeText"
+                type="text"
                 disabled
                 :state="gasFee < avax"
               ></b-form-input>
@@ -115,13 +116,13 @@ const moralis = MoralisFactory();
 const web3 = new moralis.Web3();
 import Verify2FA from "@/components/Verify2FA.vue";
 import ERC20Abi from "@openzeppelin/contracts/build/contracts/ERC20.json";
-import { GasHelper, Utils } from "@avalabs/avalanche-wallet-sdk";
+import { GasHelper, TxHelper, Utils } from "@avalabs/avalanche-wallet-sdk";
 import { MnemonicWallet } from "@avalabs/avalanche-wallet-sdk";
 import { BN } from "avalanche";
-
+import Big from "big.js";
 import {
   getEthBalance,
-  // sendEth,
+  sendEth,
   sendErc20,
   estimateTxGas,
 } from "../helpers/wallet_helper";
@@ -140,39 +141,41 @@ export default {
     addressValid() {
       return this.validateAddress(this.form.toAddress);
     },
-    tokenValid() {
-      return (
-        this.assets.filter((asset) => {
-          return asset.token === this.token;
-        }).length > 0
-      );
-    },
     amountValid() {
+      let amount = new Big(this.form.value);
+      let max = new Big(this.selectedInBn);
+      return max.gte(amount);
+    },
+    selectedInBn() {
       let assets = this.assets.filter((asset) => {
         return asset.token === this.token;
       });
       if (assets && assets[0]) {
-        return assets[0].value > web3.utils.fromWei(this.form.amount);
+        return assets[0].value;
       }
-      return false;
+      return 0;
     },
     gasFee() {
-      return Utils.bnToBigAvaxX(this.gasPrice).toFixed(0);
+      return Utils.bnToAvaxC(this.gasPrice.mul(new BN(this.form.gasLimit)));
+    },
+    gasFeeText() {
+      return this.gasFee.toString() + " AVAX";
     },
   },
   data() {
     return {
-      otpVerification: false,
+      otpVerification: true,
       form: {
         toAddress: "0x49b11a8b0fde61b643ebad2150f50397636903a2",
         amount: "0",
-        gasLimit: 0,
+        value: "0",
+        gasLimit: 21000,
       },
       isLoading: false,
       error: null,
       wallet: null,
       user: null,
-      token: null,
+      token: "AVAX",
       avax: 0,
       assets: [],
       gasPrice: new BN(225000000000),
@@ -187,7 +190,6 @@ export default {
     }
 
     this.getUser();
-    this.estimateGas();
     this.manageTokens();
 
     // Update gas price automatically
@@ -199,12 +201,55 @@ export default {
     }, 15000);
   },
   methods: {
+    change() {
+      this.cleanInput();
+    },
+    input(ev) {
+      let data = ev.data;
+
+      if (data !== null) {
+        let num = parseInt(data);
+        if (isNaN(num)) {
+          this.cleanInput();
+        }
+      }
+    },
+    cleanInput() {
+      let rawnum;
+      try {
+        if (this.form.amount === "") this.form.amount = 0;
+        rawnum = new Big(this.form.amount);
+      } catch (err) {
+        rawnum = this.form.value;
+      }
+      let assets = this.assets.filter((asset) => {
+        return asset.token === this.token;
+      });
+      let tens = Big(10).pow(assets[0].denomination);
+      let satoshis = rawnum.times(tens);
+      let bn = satoshis.toFixed(0);
+      this.form.value = bn;
+    },
+    tokenChange() {
+      this.$router.replace({
+        path: `/send/${this.token}`,
+      });
+      this.estimateGas();
+    },
     getUser() {
       this.isLoading = true;
       this.user = moralis.User.current();
       this.wallet = this.user.get("wallet");
       getEthBalance(this.wallet).then((avax) => {
         this.avax = web3.utils.fromWei(avax, "ether");
+        if (this.avax > 0) {
+          this.assets.push({
+            token: "AVAX",
+            value: avax,
+            name: "AVAX",
+            denomination: 18,
+          });
+        }
         this.isLoading = false;
       });
       const query = new moralis.Query("Mnemonic");
@@ -227,10 +272,11 @@ export default {
         if (results.length > 0) {
           results.forEach((result) => {
             this.assets.push({
-              value: web3.utils.fromWei(result.get("balance"), "ether"),
+              value: result.get("balance"),
               token: result.get("token_address"),
               name: result.get("symbol"),
               id: result.id,
+              denomination: parseInt(result.get("decimals"), 10),
             });
           });
         }
@@ -241,46 +287,75 @@ export default {
       this.error = null;
       if (!this.wallet) return;
       this.isLoading = true;
-
-      this.contract = new web3.eth.Contract(ERC20Abi.abi, this.token);
-      // Set web3 Network Settings
-      let web3Provider = `https://api.avax-test.network:443/ext/bc/C/rpc`;
-      this.contract.setProvider(web3Provider);
-      let tx = this.contract.methods.transfer(
-        this.form.toAddress,
-        this.form.amount.toString()
-      );
-      estimateTxGas(this.wallet, tx)
-        .then((gasLimit) => {
-          console.log(gasLimit);
+      if (this.token === "AVAX") {
+        // For AVAX Transfers
+        TxHelper.estimateAvaxGas(
+          this.wallet,
+          this.form.toAddress,
+          new BN(this.form.value),
+          this.gasPrice
+        ).then((gasLimit) => {
           this.isLoading = false;
-
           this.form.gasLimit = gasLimit;
-        })
-        .catch((error) => (this.error = error.message.split(", ")[0]));
+        });
+      } else {
+        this.contract = new web3.eth.Contract(ERC20Abi.abi, this.token);
+        // Set web3 Network Settings
+        let web3Provider = `https://api.avax-test.network:443/ext/bc/C/rpc`;
+        this.contract.setProvider(web3Provider);
+        let tx = this.contract.methods.transfer(
+          this.form.toAddress,
+          this.form.value
+        );
+        estimateTxGas(this.wallet, tx)
+          .then((gasLimit) => {
+            this.isLoading = false;
+            this.form.gasLimit = gasLimit;
+          })
+          .catch((error) => (this.error = error.message.split(", ")[0]));
+      }
     },
     send() {
       if (!this.wallet) return;
       if (!this.validate()) return;
       this.isLoading = true;
-      sendErc20(
-        this.webWallet,
-        this.form.toAddress,
-        web3.utils.toWei(this.form.amount, "ether"),
-        this.gasPrice,
-        this.form.gasLimit,
-        this.token,
-        this.contract
-      )
-        .then(() => {
-          this.isLoading = false;
-          this.error = null;
-          this.$router.push(`/wallet`);
-        })
-        .catch((error) => {
-          this.isLoading = false;
-          this.error = error.message;
-        });
+      if (this.token === "AVAX") {
+        sendEth(
+          this.webWallet,
+          this.form.toAddress,
+          new BN(this.form.value),
+          this.gasPrice,
+          this.form.gasLimit
+        )
+          .then(() => {
+            this.isLoading = false;
+            this.error = null;
+            this.$router.push(`/wallet`);
+          })
+          .catch((error) => {
+            this.isLoading = false;
+            this.error = error.message;
+          });
+      } else {
+        sendErc20(
+          this.webWallet,
+          this.form.toAddress,
+          this.form.value,
+          this.gasPrice,
+          this.form.gasLimit,
+          this.token,
+          this.contract
+        )
+          .then(() => {
+            this.isLoading = false;
+            this.error = null;
+            this.$router.push(`/wallet`);
+          })
+          .catch((error) => {
+            this.isLoading = false;
+            this.error = error.message;
+          });
+      }
     },
     validateAddress(addr) {
       if (addr.substring(0, 4) !== "C-0x" && addr.substring(0, 2) !== "0x") {

@@ -42,7 +42,7 @@
     <div class="col-md-10 m-auto p-0">
       <div class="w-100 bg-light my-4">
         <b-tabs content-class="mt-3" justified>
-          <b-tab  :title="`${ $t('wallet.assets')}`" active>
+          <b-tab :title="`${$t('wallet.assets')}`" active>
             <div class="col-12 p-2 text-center">
               <b-table
                 class="m-0"
@@ -67,7 +67,7 @@
               </p>
             </div>
           </b-tab>
-          <b-tab :title="`${ $t('wallet.transactions')}`">
+          <b-tab :title="`${$t('wallet.transactions')}`">
             <div class="col-12 p-2 text-center">
               <b-table
                 class="m-0"
@@ -145,7 +145,13 @@ export default {
   },
   computed: {
     userBalance() {
-      return this.balance;
+      if (this.assets.length > 0) {
+        const srds = this.assets.filter((asset) => asset.name === "SRDS");
+        if (srds.length > 0) {
+          return srds[0].value;
+        }
+      }
+      return 0;
     },
   },
   methods: {

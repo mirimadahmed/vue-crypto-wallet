@@ -11,21 +11,21 @@
         </router-link>
       </b-navbar-brand>
 
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-navbar-toggle target="nav-collapse" v-if="$store.getters.isLoggedIn"></b-navbar-toggle>
 
-      <b-collapse id="nav-collapse" is-nav>
+      <b-collapse id="nav-collapse" is-nav v-if="$store.getters.isLoggedIn">
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
+          <!-- <b-nav-item href="#">
             <router-link to="/buy">{{ $t("nav.buy") }}</router-link>
-          </b-nav-item>
-          <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
+          </b-nav-item> -->
+          <b-nav-item href="#">
             <router-link to="/wallet">{{ $t("nav.wallet") }}</router-link>
           </b-nav-item>
-          <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
+          <b-nav-item href="#">
             <router-link to="/refferals">{{ $t("nav.referrals") }}</router-link>
           </b-nav-item>
-          <b-nav-item href="#" v-if="$store.getters.isLoggedIn">
+          <b-nav-item href="#">
             <a href="#" @click="logout">{{ $t("nav.logout") }}</a>
           </b-nav-item>
         </b-navbar-nav>

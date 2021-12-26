@@ -43,21 +43,21 @@
               />
             </div>
             <div class="col-12">
-              <h1>{{ $t("onboard.heading") }}</h1>
+              <h1>{{ $t("auth.onboard.heading") }}</h1>
               <p>
-                {{ $t("onboard.lead") }}
+                {{ $t("auth.onboard.lead") }}
               </p>
             </div>
             <div class="col-12">
-              <h4 class="text-danger">{{ $t("onboard.sub_heading") }}</h4>
+              <h4 class="text-danger">{{ $t("auth.onboard.sub_heading") }}</h4>
 
               <h6 class="text-muted">
-                {{ $t("onboard.info") }}
+                {{ $t("auth.onboard.info") }}
               </h6>
             </div>
             <div class="col-12 mt-4">
               <b-form-checkbox size="lg" v-model="secured">
-                {{ $t("onboard.checkbox") }}
+                {{ $t("auth.onboard.checkbox") }}
               </b-form-checkbox>
             </div>
             <div class="col-12 my-3">
@@ -66,7 +66,7 @@
                 @click="access"
                 :disabled="!secured"
               >
-                {{ $t("onboard.btn") }}
+                {{ $t("auth.onboard.btn") }}
               </button>
             </div>
           </div>
@@ -120,7 +120,6 @@ export default {
         publicWallet.save();
 
         currentUser.set("wallet", this.caddress.toLowerCase());
-        currentUser.set("amount", 0);
         currentUser.save().then(() => {
           moralis.Cloud.run("watchAvaxAddress", {
             address: this.caddress.toLowerCase(),

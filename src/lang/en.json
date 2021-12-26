@@ -60,22 +60,26 @@
             "state_label": "State:",
             "state_placeholder": "Enter State",
             "state_description": "What's your State?",
-            "country_label": "Country:",
-            "country_placeholder": "Enter Country",
-            "country_description": "What's your Country?",
+            "country_label": "Country of Residence:",
+            "country_placeholder": "Enter Country of Residence",
+            "country_description": "What's your Country of Residence?",
+            "nationality_label": "Nationality:",
+            "nationality_placeholder": "Enter Nationality",
+            "nationality_description": "What's your Nationality?",
             "zip_label": "ZIP/Postal:",
             "zip_placeholder": "Enter ZIP/Postal",
             "zip_description": "What's your ZIP/Postal?",
-            "button": "SET DETAILS"
+            "button": "NEXT STEP"
         },
         "kyc":{
             "heading":"Enter KYC Details",
             "id_label": "Passport or Government National ID #:",
             "id_placeholder": "Enter Passport or Government National ID #",
-            "id_description": "What's your Passport or Government National ID # ?",
+            "id_description": "What's your Passport or Government National ID #?",
             "file_label": "Passport or Government National ID (Scan Front):",
             "file_placeholder": "Enter Passport or Government National ID (Scan Front)",
-            "file_description": "What's your Passport or Government National ID (Scan Front) ?"
+            "file_description": "What's your Passport or Government National ID (Scan Front)?",
+            "button": "SUBMIT KYC"
         },
         "onboard": {
             "heading": "This is your key phrase.",

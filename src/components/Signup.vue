@@ -273,6 +273,22 @@
       <div class="col-12">
         <b-form-group
           id="input-group-7"
+          :label="`${$t('auth.setup.nationality_label')}`"
+          label-for="input-1"
+          :description="`${$t('auth.setup.nationality_description')}`"
+        >
+          <b-form-input
+            id="input-7"
+            v-model="form.nationality"
+            type="text"
+            :placeholder="`${$t('auth.setup.nationality_placeholder')}`"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </div>
+      <div class="col-12">
+        <b-form-group
+          id="input-group-7"
           :label="`${$t('auth.setup.zip_label')}`"
           label-for="input-1"
           :description="`${$t('auth.setup.zip_description')}`"
@@ -336,13 +352,12 @@
           label-for="input-1"
           :description="`${$t('auth.kyc.file_description')}`"
         >
-         <b-form-file
+          <b-form-file
             v-model="form.id_file"
             required
             :placeholder="`${$t('auth.kyc.file_description')}`"
             :drop-placeholder="`${$t('auth.kyc.file_description')}`"
-        ></b-form-file>
-
+          ></b-form-file>
         </b-form-group>
       </div>
       <div class="col-12" v-if="error">
@@ -362,7 +377,7 @@
             v-if="isLoading"
           ></span>
           <span class="sr-only" v-if="isLoading">Loading...</span>
-          {{ $t("auth.setup.button") }}
+          {{ $t("auth.kyc.button") }}
         </b-button>
       </div>
     </div>
@@ -392,16 +407,17 @@ export default {
         username: "",
         score: 0,
         referral: "",
-        dob:"",
-        address1:"",
-        address2:"",
-        city:"",
-        state:"",
-        country:"",
-        zip:"",
-        nid:"",
-        id_file:"",
-        kyc:-1
+        dob: "",
+        address1: "",
+        address2: "",
+        city: "",
+        state: "",
+        country: "",
+        nationality: "",
+        zip: "",
+        nid: "",
+        id_file: "",
+        kyc: -1,
       },
     };
   },
@@ -410,15 +426,14 @@ export default {
     const currentUser = moralis.User.current();
     if (currentUser) {
       this.user = currentUser;
-      console.log(this.user.get('email'));
-      if (this.user.get('email')) {
-         this.step = 3;
-      }else{
-         this.step = 2;
+      console.log(this.user.get("email"));
+      if (this.user.get("email")) {
+        this.step = 3;
+      } else {
+        this.step = 2;
       }
 
       // If we reached here, this means we have a logged in user who needs to set details.
-
     }
   },
   computed: {
@@ -466,6 +481,7 @@ export default {
       this.user.set("city", this.form.city);
       this.user.set("state", this.form.state);
       this.user.set("country", this.form.country);
+      this.user.set("nationality", this.form.nationality);
       this.user.set("zip", this.form.zip);
       this.user
         .save()
@@ -482,31 +498,28 @@ export default {
       this.error = null;
       this.user.set("nid", this.form.nid);
 
-      const moralisFile = new moralis.File(this.form.nid+Date.now().toString(), this.form.id_file)
+      const moralisFile = new moralis.File(
+        this.form.nid + Date.now().toString(),
+        this.form.id_file
+      );
 
-      moralisFile
-      .save()
-      .then((retFile) =>{
+      moralisFile.save().then((retFile) => {
         console.log(retFile);
-         this.user.set("id_file", retFile);
-         this.user.set("kyc", 0);
-
-          this.user
-        .save()
-        .then((user) => {
-          this.user = user;
-          this.$store.commit("setAuthentication", user);
-          this.createReferralRecord(this.form.email, this.form.referral);
-          this.$router.replace({ name: "Onboard" });
-        })
-        .catch((error) => {
-          this.error = error.message;
-          this.isLoading = false;
-        });
-
-      })
-
-
+        this.user.set("id_file", retFile);
+        this.user.set("kyc", 0);
+        this.user
+          .save()
+          .then((user) => {
+            this.user = user;
+            this.$store.commit("setAuthentication", user);
+            this.createReferralRecord(this.form.email, this.form.referral);
+            this.$router.replace({ name: "Onboard" });
+          })
+          .catch((error) => {
+            this.error = error.message;
+            this.isLoading = false;
+          });
+      });
     },
     createReferralRecord(user, referral) {
       if (referral && referral.length > 0) {

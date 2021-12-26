@@ -28,7 +28,7 @@
                 class="text-secondary col pt-2"
                 style="overflow-wrap: break-word"
               >
-                {{ user.get("wallet") }}
+                <span>{{ user.get("wallet").substr(0, 15) }}...</span>
                 <copy-to-clipboard
                   :text="user.get('wallet')"
                   @copy="handleCopy"
@@ -136,7 +136,7 @@ export default {
   components: {
     CopyToClipboard,
     KYCPending,
-    KYCRejected
+    KYCRejected,
   },
   data() {
     return {
@@ -332,26 +332,7 @@ export default {
       // subscribe for real-time updates
       const subscription = await query.subscribe();
       subscription.on("create", (transaction) => {
-        this.transactions.push({
-          status: transaction.get("confirmed"),
-          id: transaction.id,
-          token: "AVAX",
-          amount:
-            transaction.get("to_address") === this.address
-              ? "+" + web3.utils.fromWei(transaction.get("value")).toString()
-              : "-" + web3.utils.fromWei(transaction.get("value")).toString(),
-          transaction: transaction.get("hash"),
-        });
-      });
-      subscription.on("update", (data) => {
-        this.transactions.forEach((transaction) => {
-          if (transaction.id === data.id) {
-            transaction.confirmed = data.get("confirmed");
-          }
-        });
-      });
-      query.find().then((transactions) => {
-        transactions.forEach((transaction) => {
+        if (transaction.get("value") !== "0")
           this.transactions.push({
             status: transaction.get("confirmed"),
             id: transaction.id,
@@ -362,6 +343,29 @@ export default {
                 : "-" + web3.utils.fromWei(transaction.get("value")).toString(),
             transaction: transaction.get("hash"),
           });
+      });
+      subscription.on("update", (data) => {
+        this.transactions.forEach((transaction) => {
+          if (transaction.id === data.id) {
+            transaction.confirmed = data.get("confirmed");
+          }
+        });
+      });
+      query.find().then((transactions) => {
+        transactions.forEach((transaction) => {
+          if (transaction.get("value") !== "0")
+            this.transactions.push({
+              status: transaction.get("confirmed"),
+              id: transaction.id,
+              token: "AVAX",
+              amount:
+                transaction.get("to_address") === this.address
+                  ? "+" +
+                    web3.utils.fromWei(transaction.get("value")).toString()
+                  : "-" +
+                    web3.utils.fromWei(transaction.get("value")).toString(),
+              transaction: transaction.get("hash"),
+            });
         });
       });
     },

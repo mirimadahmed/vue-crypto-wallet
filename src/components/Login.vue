@@ -2,7 +2,7 @@
   <div class="">
     <div class="row p-4 login-wrapper">
       <div class="col-12">
-        <h2 class="p-2 mt-3 text-center">{{ $t('auth.login.main') }}</h2>
+        <h2 class="p-2 mt-3 text-center">{{ $t("auth.login.main") }}</h2>
       </div>
       <div class="col-12">
         <a
@@ -10,7 +10,7 @@
           href="#"
           class="text-center font-weight-lighter text-secondary"
         >
-          <p>{{ $t('auth.login.dont_have_wallet') }}</p>
+          <p>{{ $t("auth.login.dont_have_wallet") }}</p>
         </a>
       </div>
       <div class="col-12" v-if="!usingMnemonic">
@@ -19,7 +19,7 @@
           href="#"
           class="text-center font-weight-lighter text-secondary"
         >
-          <p>{{ $t('auth.login.forgot_password') }}</p>
+          <p>{{ $t("auth.login.forgot_password") }}</p>
         </a>
       </div>
       <div class="col-12" v-else>
@@ -28,38 +28,50 @@
           href="#"
           class="text-center font-weight-lighter text-secondary"
         >
-          <p>{{ $t('auth.login.know_password') }}</p>
+          <p>{{ $t("auth.login.know_password") }}</p>
         </a>
       </div>
       <div class="col-12" v-if="!usingMnemonic">
-        <b-form-group id="input-group-1" :label="`${ $t('auth.login.username_label') }`" label-for="input-1">
+        <b-form-group
+          id="input-group-1"
+          :label="`${$t('auth.login.username_label')}`"
+          label-for="input-1"
+        >
           <b-form-input
             id="input-1"
             v-model="form.email"
             type="text"
-            :placeholder="`${ $t('auth.login.username_placeholder') }`"
+            :placeholder="`${$t('auth.login.username_placeholder')}`"
             required
           ></b-form-input>
         </b-form-group>
       </div>
       <div class="col-12" v-if="!usingMnemonic">
-        <b-form-group id="input-group-2" :label="`${ $t('auth.login.password_label') }`" label-for="input-1">
+        <b-form-group
+          id="input-group-2"
+          :label="`${$t('auth.login.password_label')}`"
+          label-for="input-1"
+        >
           <b-form-input
             id="input-2"
             v-model="form.password"
             type="password"
-            :placeholder="`${ $t('auth.login.password_placeholder') }`"
+            :placeholder="`${$t('auth.login.password_placeholder')}`"
             required
           ></b-form-input>
         </b-form-group>
       </div>
       <div class="col-12" v-if="usingMnemonic">
-        <b-form-group id="input-group-2" :label="`${ $t('auth.login.mnemonic_label') }`" label-for="input-1">
+        <b-form-group
+          id="input-group-2"
+          :label="`${$t('auth.login.mnemonic_label')}`"
+          label-for="input-1"
+        >
           <b-textarea
             id="input-2"
             v-model="form.mnemonic"
             type="text"
-            :placeholder="`${ $t('auth.login.mnemonic_placeholder') }`"
+            :placeholder="`${$t('auth.login.mnemonic_placeholder')}`"
             required
           >
           </b-textarea>
@@ -82,7 +94,7 @@
             v-if="isLoading"
           ></span>
           <span class="sr-only" v-if="isLoading">Loading...</span>
-          {{ $t('auth.login.button') }}
+          {{ $t("auth.login.button") }}
         </b-button>
       </div>
       <div class="col-12 pt-5">
@@ -92,7 +104,7 @@
           class="text-center font-weight-light text-info"
         >
           <p>
-            {{ $t('auth.login.cancel') }}
+            {{ $t("auth.login.cancel") }}
           </p>
         </a>
       </div>
@@ -125,7 +137,7 @@ export default {
       let myWallet = MnemonicWallet.fromMnemonic(this.form.mnemonic);
       let addressC = myWallet.getAddressC().toLowerCase();
       // Find email by addressC in Wallet table
-      const moralis = MoralisFactory()
+      const moralis = MoralisFactory();
       const query = new moralis.Query("Wallet");
       query.equalTo("wallet", addressC);
       query
@@ -136,7 +148,8 @@ export default {
             MoralisFactory()
               .User.requestPasswordReset(wallets[0].get("email"))
               .then(() => {
-                this.error = "Check your email. Password reset request was sent successfully.";
+                this.error =
+                  "Check your email. Password reset request was sent successfully.";
               })
               .catch((error) => {
                 this.error = error.message;
@@ -160,22 +173,27 @@ export default {
           .User.logIn(this.form.email, this.form.password, { usePost: true })
           .then((user) => {
             this.isLoading = false;
-            this.$store.commit("setAuthentication", user);
-            if (user.get("wallet") && user.get("wallet").length > 0) {
-              // If the user don't have email already setup, send him to email onboarding
-              if (user.get("email") && user.get("email").length > 0) {
-                // If the user don't have enabled 2fa send him to setup it
-                if (user.get("twoFactorEnabled")) {
-                  this.$router.replace({ name: "Wallet" });
+            if (user.get("deleted")) {
+              this.error = "Your account has been deleted.";
+              MoralisFactory().User.logOut();
+            } else {
+              this.$store.commit("setAuthentication", user);
+              if (user.get("wallet") && user.get("wallet").length > 0) {
+                // If the user don't have email already setup, send him to email onboarding
+                if (user.get("email") && user.get("email").length > 0) {
+                  // If the user don't have enabled 2fa send him to setup it
+                  if (user.get("twoFactorEnabled")) {
+                    this.$router.replace({ name: "Wallet" });
+                  } else {
+                    this.$router.replace({ name: "2FA" });
+                  }
                 } else {
-                  this.$router.replace({ name: "2FA" });
+                  this.$emit("email-not-set");
                 }
               } else {
-                this.$emit("email-not-set");
+                // If the user don't have a wallet already setup, send him to wallet onboarding
+                this.$router.replace({ name: "Onboard" });
               }
-            } else {
-              // If the user don't have a wallet already setup, send him to wallet onboarding
-              this.$router.replace({ name: "Onboard" });
             }
           })
           .catch((error) => {

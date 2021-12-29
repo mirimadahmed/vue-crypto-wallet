@@ -78,6 +78,7 @@
 <script>
 import { MnemonicWallet } from "@avalabs/avalanche-wallet-sdk";
 import MoralisFactory from "@/moralis";
+import MnemonicPhrase from "../js/wallets/MnemonicPhrase";
 const moralis = MoralisFactory();
 export default {
   data() {
@@ -108,8 +109,11 @@ export default {
       const currentUser = moralis.User.current();
       if (currentUser) {
         const Mnemonic = moralis.Object.extend("Mnemonic");
+
+        const phrase = new MnemonicPhrase(this.mnemonic);
+
         const privateMnemonic = new Mnemonic();
-        privateMnemonic.set("content", this.mnemonic);
+        privateMnemonic.set("content", phrase.encrypted);
         privateMnemonic.setACL(new moralis.ACL(currentUser));
         privateMnemonic.save();
 
@@ -119,6 +123,7 @@ export default {
         publicWallet.set("email", currentUser.get("email"));
         publicWallet.save();
 
+        currentUser.set("salt", phrase.pass);
         currentUser.set("wallet", this.caddress.toLowerCase());
         currentUser.save().then(() => {
           moralis.Cloud.run("watchAvaxAddress", {

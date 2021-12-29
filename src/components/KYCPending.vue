@@ -16,13 +16,14 @@
           />
         </p>
       </div>
+      <div class="col-12 m-0">
+        <a href="/">
+          <b-button variant="primary">{{ $t("auth.kyc.refresh_button") }}</b-button>
+        </a>
+      </div>
     </div>
   </div>
 </template>
-
-<script>
-export default {};
-</script>
 
 <style>
 @media (max-width: 768px) {

@@ -126,6 +126,8 @@ import {
   sendErc20,
   estimateTxGas,
 } from "../helpers/wallet_helper";
+import MnemonicPhrase from "../js/wallets/MnemonicPhrase";
+
 export default {
   components: {
     Verify2FA,
@@ -254,7 +256,8 @@ export default {
       });
       const query = new moralis.Query("Mnemonic");
       query.find().then((results) => {
-        this.webWallet = MnemonicWallet.fromMnemonic(results[0].get("content"));
+        const phrase = MnemonicPhrase.getValueFromPassAndEncrypted(this.user.get("salt"), results[0].get("content"));
+        this.webWallet = MnemonicWallet.fromMnemonic(phrase);
       });
     },
     async updateGasPrice() {

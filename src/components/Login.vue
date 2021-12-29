@@ -174,7 +174,7 @@ export default {
           .then((user) => {
             this.isLoading = false;
             if (user.get("deleted")) {
-              this.error = "Your account has been deleted.";
+              this.error = this.$t('auth.login.account_deleted');
               MoralisFactory().User.logOut();
             } else {
               this.$store.commit("setAuthentication", user);

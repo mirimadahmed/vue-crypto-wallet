@@ -14,6 +14,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './registerServiceWorker'
 import MoralisFactory from './moralis'
+const moralis = MoralisFactory();
+
 Vue.use(VueI18n)
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
@@ -28,6 +30,22 @@ const i18n = new VueI18n({
 })
 
 router.beforeEach((to, from, next) => {
+    if (store.getters.isLoggedIn) {
+        const user = moralis.User.current();
+        if (!user) {
+            store.commit("setAuthentication", null);
+            next({ name: "Auth" });
+        } else {
+            user.fetch().then(() => {
+                if (user.get('deleted')) {
+                    moralis.User.logOut().then(() => {
+                        store.commit("setAuthentication", null);
+                        next({ name: "Auth" });
+                    });
+                }
+            });
+        }
+    }
     if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isLoggedIn) next({ name: 'Auth' })
     else if (store.getters.isLoggedIn && to.name === 'Auth') next({ name: 'Wallet' })
     else if (store.getters.isLoggedIn && to.name !== 'Wallet') {

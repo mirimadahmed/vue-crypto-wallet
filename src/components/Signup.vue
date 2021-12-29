@@ -138,6 +138,7 @@
             type="email"
             :placeholder="`${$t('auth.setup.email_placeholder')}`"
             required
+            :state="detailsState['email']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -154,6 +155,7 @@
             type="text"
             :placeholder="`${$t('auth.setup.name_placeholder')}`"
             required
+            :state="detailsState['name']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -170,6 +172,7 @@
             type="text"
             :placeholder="`${$t('auth.setup.surname_placeholder')}`"
             required
+            :state="detailsState['surname']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -186,6 +189,7 @@
             type="date"
             :placeholder="`${$t('auth.setup.dob_placeholder')}`"
             required
+            :state="detailsState['dob']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -202,6 +206,7 @@
             type="text"
             :placeholder="`${$t('auth.setup.address1_placeholder')}`"
             required
+            :state="detailsState['address1']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -217,7 +222,6 @@
             v-model="form.address2"
             type="text"
             :placeholder="`${$t('auth.setup.address2_placeholder')}`"
-            required
           ></b-form-input>
         </b-form-group>
       </div>
@@ -234,6 +238,7 @@
             type="text"
             :placeholder="`${$t('auth.setup.city_placeholder')}`"
             required
+            :state="detailsState['city']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -250,6 +255,7 @@
             type="text"
             :placeholder="`${$t('auth.setup.state_placeholder')}`"
             required
+            :state="detailsState['state']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -267,6 +273,7 @@
             type="text"
             :placeholder="`${$t('auth.setup.country_placeholder')}`"
             required
+            :state="detailsState['country']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -283,6 +290,7 @@
             type="text"
             :placeholder="`${$t('auth.setup.nationality_placeholder')}`"
             required
+            :state="detailsState['nationality']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -298,7 +306,6 @@
             v-model="form.zip"
             type="text"
             :placeholder="`${$t('auth.setup.zip_placeholder')}`"
-            required
           ></b-form-input>
         </b-form-group>
       </div>
@@ -308,9 +315,9 @@
       <div class="col-12 text-center">
         <b-button
           type="submit"
-          variant="secondary"
+          variant="primary"
           @click="setEmailAndOthers"
-          :disabled="isLoading"
+          :disabled="isLoading || !detailsValid"
         >
           <span
             class="spinner-border spinner-border-sm"
@@ -342,6 +349,7 @@
             type="text"
             :placeholder="`${$t('auth.kyc.id_placeholder')}`"
             required
+            :state="kycState['nid']"
           ></b-form-input>
         </b-form-group>
       </div>
@@ -357,6 +365,7 @@
             required
             :placeholder="`${$t('auth.kyc.file_description')}`"
             :drop-placeholder="`${$t('auth.kyc.file_description')}`"
+            :state="kycState['id_file']"
           ></b-form-file>
         </b-form-group>
       </div>
@@ -366,9 +375,9 @@
       <div class="col-12 text-center">
         <b-button
           type="submit"
-          variant="secondary"
+          variant="primary"
           @click="setKyc"
-          :disabled="isLoading"
+          :disabled="isLoading || !kycValid"
         >
           <span
             class="spinner-border spinner-border-sm"
@@ -392,12 +401,55 @@ export default {
   components: {
     Password,
   },
+  computed: {
+    passwordConfirmationRule() {
+      if (this.form.password.length === 0) return null;
+      return this.form.score >= 3;
+    },
+    confirmPasswordConfirmationRule() {
+      if (this.form.confirmpassword.length === 0) return null;
+      return (
+        this.form.score >= 3 && this.form.password === this.form.confirmpassword
+      );
+    },
+    detailsValid() {
+      return this.kycFields.every(
+        (field) => this.form[field] && this.form[field].length >= 3
+      );
+    },
+    detailsState() {
+      return this.kycFields.reduce((acc, field) => {
+        acc[field] = this.form[field].length >= 3;
+        return acc;
+      }, {});
+    },
+    kycState() {
+      return {
+        nid: this.form.nid.length >= 3,
+        id_file: this.form.id_file !== null,
+      };
+    },
+    kycValid() {
+      return this.form.nid.length >= 3 && this.form.id_file !== null;
+    },
+  },
   data() {
     return {
       isLoading: false,
       error: null,
       step: 1,
       user: null,
+      kycFields: [
+        "email",
+        "name",
+        "surname",
+        "dob",
+        "address1",
+        "city",
+        "state",
+        "country",
+        "nationality",
+      ],
       form: {
         email: "",
         password: "",
@@ -416,7 +468,7 @@ export default {
         nationality: "",
         zip: "",
         nid: "",
-        id_file: "",
+        id_file: null,
         kyc: -1,
       },
     };
@@ -435,18 +487,6 @@ export default {
 
       // If we reached here, this means we have a logged in user who needs to set details.
     }
-  },
-  computed: {
-    passwordConfirmationRule() {
-      if (this.form.password.length === 0) return null;
-      return this.form.score >= 3;
-    },
-    confirmPasswordConfirmationRule() {
-      if (this.form.confirmpassword.length === 0) return null;
-      return (
-        this.form.score >= 3 && this.form.password === this.form.confirmpassword
-      );
-    },
   },
   methods: {
     setScore(score) {
@@ -471,6 +511,7 @@ export default {
         });
     },
     setEmailAndOthers() {
+      this.isLoading = true;
       this.error = null;
       this.user.set("email", this.form.email);
       this.user.set("name", this.form.name);
@@ -486,6 +527,7 @@ export default {
       this.user
         .save()
         .then((user) => {
+          this.isLoading = false;
           this.user = user;
           this.step++;
         })
@@ -495,6 +537,7 @@ export default {
         });
     },
     setKyc() {
+      this.isLoading = true;
       this.error = null;
       this.user.set("nid", this.form.nid);
 
@@ -510,6 +553,7 @@ export default {
         this.user
           .save()
           .then((user) => {
+            this.isLoading = false;
             this.user = user;
             this.$store.commit("setAuthentication", user);
             this.createReferralRecord(this.form.email, this.form.referral);

@@ -22,10 +22,10 @@
           <!-- <b-nav-item href="#">
             <router-link to="/buy">{{ $t("nav.buy") }}</router-link>
           </b-nav-item> -->
-          <b-nav-item href="#" v-if="kycPending">
+          <b-nav-item href="#" v-if="!kycPending">
             <router-link to="/wallet">{{ $t("nav.wallet") }}</router-link>
           </b-nav-item>
-          <b-nav-item href="#" v-if="kycPending">
+          <b-nav-item href="#" v-if="!kycPending">
             <router-link to="/refferals">{{ $t("nav.referrals") }}</router-link>
           </b-nav-item>
           <b-nav-item href="#">
@@ -67,7 +67,7 @@ export default {
   },
   computed: {
     kycPending() {
-      return this.user.get("kyc") === 0 || this.user.get("kyc") === 1;
+      return this.user && (this.user.get("kyc") === 0 || this.user.get("kyc") === 1);
     }
   },
   data() {

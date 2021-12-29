@@ -7,6 +7,7 @@
             "main": "ACCESS YOUR SARDIS WALLET",
             "dont_have_wallet": "Don't have a wallet?",
             "forgot_password": "Forgot password? Reset using mnemonic",
+            "account_deleted": "Your account is deleted, please contact admin on admin@mysardis.com",
             "know_password": "Access using username and password",
             "username_label": "Username:",
             "username_placeholder": "Enter Username:",
@@ -19,7 +20,7 @@
         },
         "signup": {
             "info": "NEW TO SARDIS?",
-            "heading": "Create a new wallet to send and receive SARDIS.",
+            "heading": "Create a new wallet to send and receive SRDS.",
             "button": "CREATE NEW WALLET",
             "main": "SETUP NEW SARDIS WALLET",
             "have_wallet": "Already have a wallet?",
@@ -82,8 +83,9 @@
             "button": "SUBMIT KYC",
             "pending_heading": "KYC APPLICATION PENDING",
             "pending_lead": "Your KYC is pending approval from admin.",
+            "refresh_button": "Refresh to check status",
             "rejected_heading": "KYC APPLICATION REJECTED",
-            "rejected_lead": "Your KYC is rejected. Please check your email for details."
+            "rejected_lead": "Your KYC is rejected. Please contact at admin@mysardis.com for more information."
         },
         "onboard": {
             "heading": "This is your key phrase.",

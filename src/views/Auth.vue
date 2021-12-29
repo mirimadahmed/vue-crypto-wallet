@@ -66,6 +66,7 @@
 <script>
 import Login from "@/components/Login.vue";
 import Signup from "@/components/Signup.vue";
+
 export default {
   components: {
     Login,
@@ -85,6 +86,7 @@ export default {
       this.$store.commit("setReferral", this.$route.params.ref);
       this.$router.push('/auth')
     }
+
   }
 };
 </script>
@@ -95,7 +97,7 @@ export default {
   transform: scaleX(-1);
 }
 
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
   .auth-child-wrapper {
     width: 100% !important;
     margin: 0 !important;

@@ -159,6 +159,9 @@ export default {
     this.manageTokenTransactions();
     this.manageAvax();
     this.manageAvaxTransactions();
+
+
+
   },
   computed: {
     kycPending() {

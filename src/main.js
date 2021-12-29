@@ -5,8 +5,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueI18n from 'vue-i18n'
-import en from '@/lang/en.json'
-import tr from '@/lang/tr.json'
+import axios from 'axios'
+
+// import en from '@/lang/en.json'
+// import tr from '@/lang/tr.json'
 
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
@@ -14,6 +16,10 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './registerServiceWorker'
 import MoralisFactory from './moralis'
+
+const moralis = MoralisFactory();
+
+
 Vue.use(VueI18n)
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
@@ -24,8 +30,10 @@ Vue.config.productionTip = false
 const i18n = new VueI18n({
     locale: "en", // set locale
     fallbackLocale: "tr",
-    messages: { en, tr }// set locale messages
+   // messages: { en:loadLanguageAsync('en') , tr: loadLanguageAsync('tr')  }// set locale messages
 })
+
+
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isLoggedIn) next({ name: 'Auth' })
@@ -45,3 +53,19 @@ new Vue({
     router,
     render: h => h(App)
 }).$mount('#app')
+
+function loadLanguageAsync () {
+    const query = new moralis.Query("Translation");
+    query.find().then((results) => {
+      if (results.length > 0) {
+            results.forEach((result) => {
+                  axios.get(result.get('messages')._url).then(response => {
+                    i18n.setLocaleMessage(result.get('shortname'), response.data)
+                  })
+
+            });
+        }
+    });
+}
+
+loadLanguageAsync();

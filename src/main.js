@@ -5,9 +5,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueI18n from 'vue-i18n'
-import en from '@/lang/en.json'
-import tr from '@/lang/tr.json'
-
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -26,7 +23,7 @@ Vue.config.productionTip = false
 const i18n = new VueI18n({
     locale: "en", // set locale
     fallbackLocale: "tr",
-    messages: { en, tr }// set locale messages
+    
 })
 
 router.beforeEach((to, from, next) => {
@@ -62,4 +59,4 @@ new Vue({
     store,
     router,
     render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');

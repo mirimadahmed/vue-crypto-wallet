@@ -153,12 +153,13 @@ export default {
     };
   },
   created() {
-    this.getUser();
-    this.getStaticMessage();
-    this.manageTokens();
-    this.manageTokenTransactions();
-    this.manageAvax();
-    this.manageAvaxTransactions();
+    this.getUser().then(() => {
+      this.getStaticMessage();
+      this.manageTokens();
+      this.manageTokenTransactions();
+      this.manageAvax();
+      this.manageAvaxTransactions();
+    });
   },
   computed: {
     kycPending() {

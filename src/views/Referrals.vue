@@ -10,7 +10,7 @@
             <div class="col-md-12 my-3">
               <p style="overflow-wrap: break-word">
                 <copy-to-clipboard
-                  :text="`https://wallet-app-sardis.herokuapp.com/refer/${user.get(
+                  :text="`https://wallet.mysardis.com/refer/${user.get(
                     'email'
                   )}`"
                   @copy="handleCopy"
@@ -22,12 +22,12 @@
                 {{ $t("referral.unique_link") }}
 
                 <a
-                  :href="`https://wallet-app-sardis.herokuapp.com/refer/${user.get(
+                  :href="`https://wallet.mysardis.com/refer/${user.get(
                     'email'
                   )}`"
                   target="_blank"
                 >
-                  https://wallet-app-sardis.herokuapp.com/refer/{{
+                  https://wallet.mysardis.com/refer/{{
                     user.get("email")
                   }}
                 </a>

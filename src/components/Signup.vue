@@ -553,7 +553,6 @@ export default {
       );
 
       moralisFile.save().then((retFile) => {
-        console.log(retFile);
         this.user.set("id_file", retFile);
         this.user.set("kyc", 0);
         this.user

@@ -27,7 +27,6 @@ class Erc20Token {
     static fromAddress(address) {
         //@ts-ignore
         var tokenInst = new web3.eth.Contract(ERC20Abi.abi, address)
-        console.log(tokenInst)
     }
 
     createTransferTx(to, amount) {

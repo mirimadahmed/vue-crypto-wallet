@@ -18,7 +18,6 @@ async function sendEth(
     let fromAddr = wallet.getAddressC().toLowerCase()
 
     let tx = await buildEvmTransferNativeTx(fromAddr, to, amount, gasPrice, gasLimit)
-    console.log(tx)
     let signedTx = await wallet.signEvm(tx)
 
     let txHex = signedTx.serialize().toString('hex')

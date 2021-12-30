@@ -121,17 +121,14 @@ export default {
     generateTempSecret() {
       let secret = speakeasy.generateSecret();
       this.secret = secret.ascii;
-      console.log(this.secret);
       this.user.set("tempSecret", this.secret);
       this.otpauth_url = speakeasy.otpauthURL({
         secret: this.secret,
         label: "Sardis Wallet",
       });
       this.text = this.otpauth_url.split("=")[1].split("&")[0];
-      console.log(this.otpauth_url);
       QRCode.toDataURL(this.otpauth_url, (err, data_url) => {
         this.qr = data_url;
-        console.log(this.qr);
       });
     },
     verify() {

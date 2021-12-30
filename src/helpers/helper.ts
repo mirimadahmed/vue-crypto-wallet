@@ -30,7 +30,6 @@ function calculateStakingReward(amount: BN, duration: number, currentSupply: BN)
     let defValues = Defaults.network[networkID]
 
     if (!defValues) {
-        console.error('Network default values not found.')
         return new BN(0)
     }
     const defPlatformVals = defValues.P

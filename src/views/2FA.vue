@@ -126,7 +126,6 @@ export default {
       this.otpauth_url = speakeasy.otpauthURL({
         secret: this.secret,
         label: "Sardis Wallet",
-        algorithm: "sha512",
       });
       this.text = this.otpauth_url.split("=")[1].split("&")[0];
       console.log(this.otpauth_url);
@@ -140,7 +139,6 @@ export default {
         secret: this.secret,
         encoding: "ascii",
         token: this.state,
-        algorithm: "sha512",
       });
       if (this.verified) {
         this.isLoading = true;

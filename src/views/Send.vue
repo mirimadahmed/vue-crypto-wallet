@@ -168,7 +168,7 @@ export default {
     return {
       otpVerification: false,
       form: {
-        toAddress: "0x49b11a8b0fde61b643ebad2150f50397636903a2",
+        toAddress: "",
         amount: "0",
         value: "0",
         gasLimit: 21000,

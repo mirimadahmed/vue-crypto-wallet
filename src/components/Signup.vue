@@ -267,14 +267,16 @@
           label-for="input-1"
           :description="`${$t('auth.setup.country_description')}`"
         >
-          <b-form-input
+          <b-form-select
             id="input-7"
             v-model="form.country"
-            type="text"
+            :options="countries"
             :placeholder="`${$t('auth.setup.country_placeholder')}`"
             required
             :state="detailsState['country']"
-          ></b-form-input>
+            :text-field="'name'"
+            :value-field="'name'"
+          ></b-form-select>
         </b-form-group>
       </div>
       <div class="col-12">
@@ -284,14 +286,16 @@
           label-for="input-1"
           :description="`${$t('auth.setup.nationality_description')}`"
         >
-          <b-form-input
+        <b-form-select
             id="input-7"
             v-model="form.nationality"
-            type="text"
+            :options="countries"
             :placeholder="`${$t('auth.setup.nationality_placeholder')}`"
             required
             :state="detailsState['nationality']"
-          ></b-form-input>
+            :text-field="'name'"
+            :value-field="'name'"
+          ></b-form-select>
         </b-form-group>
       </div>
       <div class="col-12">
@@ -394,6 +398,8 @@
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
+import { countries } from "../countries.js";
 import Password from "vue-password-strength-meter";
 import MoralisFactory from "@/moralis";
 const moralis = MoralisFactory();
@@ -435,6 +441,7 @@ export default {
   },
   data() {
     return {
+      countries: countries,
       isLoading: false,
       error: null,
       step: 1,
@@ -478,7 +485,6 @@ export default {
     const currentUser = moralis.User.current();
     if (currentUser) {
       this.user = currentUser;
-      console.log(this.user.get("email"));
       if (this.user.get("email")) {
         this.step = 3;
       } else {

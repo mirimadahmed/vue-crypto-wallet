@@ -182,11 +182,13 @@ export default {
     async getUser() {
       this.user = moralis.User.current();
       await this.user.fetch();
-      if (this.user.get("wallet") && this.user.get("wallet").length > 0) {
-        this.address = this.user.get("wallet").toLowerCase();
-      } else {
-        // If the user don't have a wallet already setup, send him to wallet onboarding
-        this.$router.replace({ name: "Onboard" });
+      if (this.user.get("kyc") === 2) {
+        if (this.user.get("wallet") && this.user.get("wallet").length > 0) {
+          this.address = this.user.get("wallet").toLowerCase();
+        } else {
+          // If the user don't have a wallet already setup, send him to wallet onboarding
+          this.$router.replace({ name: "Onboard" });
+        }
       }
     },
     getStaticMessage() {
